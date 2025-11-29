@@ -1,0 +1,75 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Vend+Sans:ital,wght@0,300..700;1,300..700&display=swap");
+@import "animate.css";
+
+:root {
+  font-family: "Vend Sans", system-ui, sans-serif;
+  line-height: 1.5;
+  background-color: #f1f7ed;
+}
+
+@theme {
+  --font-title: "Montserrat", sans-serif;
+  --font-body: "Vend Sans", sans-serif;
+  --primary-color: #6b945a;
+  --secundary-color: #1e1e1e;
+}
+
+/* h2 {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+} */
+
+/* h3 {
+  font-family: var(--font-title);
+  font-weight: 600;
+  font-size: 1.75rem;
+  color: var(--primary-color);
+} */
+
+/* p {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  color: var(--secundary-color);
+}
+
+li {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  color: var(--secundary-color);
+} */
+
+a {
+  text-decoration: none;
+  transition: 0.4s;
+  position: relative;
+}
+
+a::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 4px;
+  background-color: var(--primary-color);
+  bottom: -5px;
+  left: 0;
+  transition: width 0.3s;
+}
+
+a:hover::before {
+  width: 100%;
+}
+
+.custom-pagination .swiper-pagination-bullet {
+  background-color: #d1d5db; /* gray-300 */
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.custom-pagination .swiper-pagination-bullet-active {
+  background-color: var(--primary-color);
+  transform: scale(1.2);
+}
