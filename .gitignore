@@ -1,0 +1,13 @@
+# Visual Studio cache files
+.vs/
+*.vscode/
+*.vsidx
+*.db
+
+# Build output (optional)
+bin/
+obj/
+
+# Node project (if frontend is Node)
+node_modules/
+dist/
