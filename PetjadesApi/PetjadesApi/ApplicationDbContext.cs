@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PetjadesApi.Models;
 
 namespace PetjadesApi
 {
@@ -8,5 +9,6 @@ namespace PetjadesApi
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
+        public DbSet<Animal> Animals { get; set; }
     }
 }

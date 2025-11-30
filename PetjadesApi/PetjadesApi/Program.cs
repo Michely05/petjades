@@ -1,7 +1,10 @@
 using PetjadesApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-
+using PetjadesApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,22 +20,37 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = false
+    };
+});
+
 
 builder.Services.AddAuthorization();
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.Name = "AuthCookie";
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.SameSite = SameSiteMode.None;
-});
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.Cookie.Name = "AuthCookie";
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+//    options.Cookie.SameSite = SameSiteMode.None;
+//});
 
-builder.Services.Configure<CookiePolicyOptions>(options =>
-{
-    options.MinimumSameSitePolicy = SameSiteMode.None;
-});
+//builder.Services.Configure<CookiePolicyOptions>(options =>
+//{
+//    options.MinimumSameSitePolicy = SameSiteMode.None;
+//});
 
 builder.Services.AddCors(options =>
 {
@@ -82,6 +100,18 @@ app.MapGet("/weatherforecast", () =>
 .RequireAuthorization()
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+app.MapPost("/animals", async (Animal animal, ApplicationDbContext db) =>
+{
+    db.Animals.Add(animal);
+    await db.SaveChangesAsync();
+    return Results.Created($"/animals/{animal.Id}", animal);
+});
+
+app.MapGet("/animals", async (ApplicationDbContext db) =>
+{
+    return await db.Animals.ToListAsync();
+});
 
 app.Run();
 

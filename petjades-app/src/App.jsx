@@ -7,7 +7,11 @@ import { Colaborate } from "./pages/Colaborate";
 import { Nosaltres } from "./pages/Nosaltres";
 import { PrivateAccess } from "./pages/PrivateAccess";
 import { PrivateAnimals } from "./pages/PrivateAnimals";
+import { PrivateRequests } from "./pages/PrivateRequests";
+import { PrivateAgenda } from "./pages/PrivateAgenda";
 import { ProtectedRoute } from "./router/ProtectedRoute";
+import { DashboardLayout } from "./components/DashboardLayout";
+import { AnimalForm } from "./sections/PrivateAnimals/AnimalForm";
 
 function App() {
   return (
@@ -22,13 +26,18 @@ function App() {
           <Route path="/acces-privat" element={<PrivateAccess />} />
 
           <Route
-            path="/private-animals"
+            path="/dashboard"
             element={
               <ProtectedRoute>
-                <PrivateAnimals />
+                <DashboardLayout />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route path="private-animals" element={<PrivateAnimals />} />
+            <Route path="sollicituds" element={<PrivateRequests />} />
+            <Route path="agenda" element={<PrivateAgenda />} />
+            <Route path="new-animal" element={<AnimalForm />} />
+          </Route>
         </Routes>
       </main>
     </div>

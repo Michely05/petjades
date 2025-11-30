@@ -21,7 +21,7 @@ export const PrivateAccess = () => {
         try {
             const response = await axios.post("https://localhost:7151/identity/login", { email, password });
             login(response.data.accessToken);
-            navigate("/private-animals");
+            navigate("/dashboard/private-animals");
 
         } catch {
             alert("Credenciales incorrectas");
