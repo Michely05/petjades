@@ -4,6 +4,7 @@ import { PawIcon } from '../components/PawIcon';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 export const PrivateAccess = () => {
 
@@ -12,25 +13,18 @@ export const PrivateAccess = () => {
 
     const navigate = useNavigate();
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const { login } = useAuth();
 
+        const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
         try {
-            const response = await axios.post(
-                "https://localhost:7151/identity/login",
-                {
-                    email,
-                    password
-                }
-            );
-            const token = response.data.accessToken;
-            localStorage.setItem("token", token);
-            console.log("Login correcto:", response.data);
-            alert("sesión iniciada!");
+            const response = await axios.post("https://localhost:7151/identity/login", { email, password });
+            login(response.data.accessToken);
             navigate("/private-animals");
-        } catch (error: any) {
-            console.error("Error al iniciar sesión:", error.response?.data ?? error);
-            alert("Credenciales incorrectas...");
+
+        } catch {
+            alert("Credenciales incorrectas");
         }
     };
 
