@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PetjadesApi;
-using PetjadesApi.Models;
 using PetjadesApi.Repositories;
 using PetjadesApi.Services;
 
@@ -10,17 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
+
+builder.Services.AddControllers();
 
 builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
@@ -45,26 +43,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseCors("AllowFrontend");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllers();
+
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
-
-// CREATE ANIMAL
-app.MapPost("/animals", async (Animal animal, ApplicationDbContext db) =>
-{
-    db.Animals.Add(animal);
-    await db.SaveChangesAsync();
-    return Results.Created($"/animals/{animal.Id}", animal);
-});
-//.RequireAuthorization();
-
-// GET ALL ANIMALS
-app.MapGet("/animals", async (ApplicationDbContext db) =>
-{
-    return await db.Animals.ToListAsync();
-});
-//.RequireAuthorization();
 
 app.Run();

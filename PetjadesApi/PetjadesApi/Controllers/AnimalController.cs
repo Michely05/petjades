@@ -5,26 +5,27 @@ using PetjadesApi.Services;
 namespace PetjadesApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class AnimalsController : ControllerBase
 {
-    private readonly IAnimalService _service;
+    private readonly IAnimalService _AnimalService;
 
     public AnimalsController(IAnimalService service)
     {
-        _service = service;
+        _AnimalService = service;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _service.GetAllAsync());
+        var animals = await _AnimalService.GetAllAsync();
+        return Ok(animals);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(Animal animal)
     {
-        var created = await _service.CreateAsync(animal);
-        return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+        var created = await _AnimalService.CreateAsync(animal);
+        return Created($"/animals/{created.Id}", created);
     }
 }
