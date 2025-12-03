@@ -7,5 +7,6 @@ namespace PetjadesApi.Repositories
         Task<List<Animal>> GetAllAsync();
         Task<Animal?> GetByIdAsync(int id);
         Task<Animal> CreateAsync(Animal animal);
+        Task<Animal?> UpdateAnimal(Animal animal);
     }
 }

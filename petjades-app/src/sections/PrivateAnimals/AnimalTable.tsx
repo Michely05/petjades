@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 interface Animal {
   id: number;
@@ -13,6 +15,7 @@ interface Animal {
 export const AnimalTable = () => {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get("https://localhost:7151/animals", {
@@ -46,7 +49,7 @@ export const AnimalTable = () => {
               <td className="p-3">{a.mida}</td>
 
               <td className="p-2 flex justify-center gap-3">
-                <button className="text-blue-600 hover:text-blue-800">
+                <button className="text-blue-600 hover:text-blue-800" onClick={() => navigate(`/dashboard/update-animal/${a.id}`)}>
                   Edit
                 </button>
 

@@ -20,4 +20,9 @@ public class AnimalService : IAnimalService
 
     public Task<Animal> CreateAsync(Animal animal) =>
         _repo.CreateAsync(animal);
+
+    public async Task<Animal?> UpdateAnimal(Animal animal)
+    {
+        return await _repo.UpdateAnimal(animal);
+    }
 }

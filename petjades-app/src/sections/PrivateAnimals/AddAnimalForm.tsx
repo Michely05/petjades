@@ -3,7 +3,7 @@ import { BaseButton } from '../../components/BaseButton';
 import axios from "axios";
 import { useState } from "react";
 
-export const AnimalForm = () => {
+export const AddAnimalForm = () => {
     const [form, setForm] = useState({
         nom: "",
         especie: "",

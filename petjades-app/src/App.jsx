@@ -11,7 +11,8 @@ import { PrivateRequests } from "./pages/PrivateRequests";
 import { PrivateAgenda } from "./pages/PrivateAgenda";
 import { ProtectedRoute } from "./router/ProtectedRoute";
 import { DashboardLayout } from "./components/DashboardLayout";
-import { AnimalForm } from "./sections/PrivateAnimals/AnimalForm";
+import { AddAnimalForm } from "./sections/PrivateAnimals/AddAnimalForm";
+import { UpdateAnimalForm } from "./sections/PrivateAnimals/UpdateAnimalForm";
 
 function App() {
   return (
@@ -36,7 +37,8 @@ function App() {
             <Route path="private-animals" element={<PrivateAnimals />} />
             <Route path="sollicituds" element={<PrivateRequests />} />
             <Route path="agenda" element={<PrivateAgenda />} />
-            <Route path="new-animal" element={<AnimalForm />} />
+            <Route path="new-animal" element={<AddAnimalForm />} />
+            <Route path="update-animal/:id" element={<UpdateAnimalForm />} />
           </Route>
         </Routes>
       </main>

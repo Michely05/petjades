@@ -24,4 +24,11 @@ public class AnimalRepository : IAnimalRepository
         await _db.SaveChangesAsync();
         return animal;
     }
+
+    public async Task<Animal?> UpdateAnimal(Animal animal)
+    {
+        _db.Animals.Update(animal);
+        await _db.SaveChangesAsync();
+        return animal;
+    }
 }
