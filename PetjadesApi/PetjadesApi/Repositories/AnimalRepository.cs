@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PetjadesApi.Dtos;
 using PetjadesApi.Models;
 
 namespace PetjadesApi.Repositories;
@@ -31,4 +32,16 @@ public class AnimalRepository : IAnimalRepository
         await _db.SaveChangesAsync();
         return animal;
     }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var animal = await _db.Animals.FindAsync(id);
+        if (animal == null)
+            return false;
+
+        _db.Animals.Remove(animal);
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
 }

@@ -1,7 +1,7 @@
 import { TextField, MenuItem } from "@mui/material";
 import { BaseButton } from '../../components/BaseButton';
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const UpdateAnimalForm = () => {
@@ -20,11 +20,18 @@ export const UpdateAnimalForm = () => {
     imatgeUrl: ""
   });
 
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
   useEffect(() => {
     axios.get(`https://localhost:7151/animals/${id}`)
-      .then(res => setForm(res.data))
+      .then(res => {
+        setForm(res.data);
+        setPreview(res.data.imatgeUrl ? "https://localhost:7151" + res.data.imatgeUrl : null);
+      })
       .catch(() => alert("No s'ha pogut carregar l'animal"));
   }, [id]);
+
 
   const updateField = (key: string, value: string) =>
     setForm({ ...form, [key]: value });
@@ -32,15 +39,39 @@ export const UpdateAnimalForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await axios.put(
-      `https://localhost:7151/animals/${id}`,
-      form,
-      { headers: { Authorization: "Bearer " + token } }
-    );
+    const formData = new FormData();
+
+    Object.entries(form).forEach(([k, v]) => formData.append(k, v));
+
+    if (image) {
+      formData.append("image", image); // Solo si el usuario la cambia
+    }
+
+    await axios.put(`https://localhost:7151/animals/${id}`, formData, {
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "multipart/form-data"
+      }
+    });
 
     alert("Animal actualitzat!");
     navigate("/dashboard/private-animals");
   };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const openFileDialog = () => fileInputRef.current?.click();
 
   return (
     <div className="flex justify-center items-center min-h-[80vh]">
@@ -83,13 +114,38 @@ export const UpdateAnimalForm = () => {
                 <MenuItem value="pendent">Pendent</MenuItem>
           </TextField>
 
-          <div className="border-2 border-dashed border-[#6b945a] rounded-md h-40 flex flex-col items-center justify-center text-center text-sm text-[#6b945a]">
-            <span className="font-medium">Arrossega aquí les teves imatges</span>
+          <div 
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onClick={openFileDialog}
+            className="border-2 border-dashed border-[#6b945a] rounded-md h-40 flex flex-col items-center justify-center text-center text-sm text-[#6b945a] cursor-pointer hover:bg-[#e7f2e3] transition"
+          >
+            <span className="font-medium">Arrossega aquí la imatge</span>
             <span className="text-xs opacity-70">o navega</span>
-            <span className="text-xs mt-2 opacity-70">Màxim 4 imatges de 10MB cadascuna</span>
+
+            {preview && (
+              <img 
+                src={preview} 
+                alt="preview"
+                className="mt-3 h-20 object-cover rounded"
+              />
+            )}
           </div>
 
-          <BaseButton variant="primary" type="submit">CREAR</BaseButton>
+          <input 
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImage(file);
+                setPreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+
+          <BaseButton variant="primary" type="submit">GUARDAR</BaseButton>
 
         </form>
       </div>

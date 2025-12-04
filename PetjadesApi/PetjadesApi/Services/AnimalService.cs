@@ -1,4 +1,5 @@
-﻿using PetjadesApi.Models;
+﻿using PetjadesApi.Dtos;
+using PetjadesApi.Models;
 using PetjadesApi.Repositories;
 
 namespace PetjadesApi.Services;
@@ -25,4 +26,9 @@ public class AnimalService : IAnimalService
     {
         return await _repo.UpdateAnimal(animal);
     }
+    public async Task<bool> DeleteAsync(int id)
+    {
+        return await _repo.DeleteAsync(id);
+    }
+
 }

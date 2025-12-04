@@ -25,6 +25,23 @@ export const AnimalTable = () => {
     .catch(err => console.error("ERROR loading animals:", err));
   }, []);
 
+  const handleDelete = async (id: number) => {
+    if (!confirm("Segur que vols eliminar aquest animal?")) return;
+
+    try {
+      await axios.delete(`https://localhost:7151/animals/${id}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      setAnimals((prev) => prev.filter((a) => a.id !== id));
+
+      alert("Animal eliminat correctament!");
+    } catch (error) {
+      console.error(error);
+      alert("Error al eliminar l'animal");
+    }
+  };
+
   return (
     <div className="p-8">
       <table className="w-full text-left border-collapse shadow-sm">
@@ -53,7 +70,7 @@ export const AnimalTable = () => {
                   Edit
                 </button>
 
-                <button className="text-red-600 hover:text-red-800">
+                <button className="text-red-600 hover:text-red-800" onClick={() => handleDelete(a.id)}>
                   Delete
                 </button>
               </td>
