@@ -7,9 +7,9 @@ export const PrivateAnimals = () => {
 
     return (
         <div className="">
-            <h1 className="text-3xl text-(--primary-color) font-bold mb-8">ANIMALS</h1>
+            <h1 className="text-3xl text-(--primary-color) font-bold">ANIMALS</h1>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end px-8">
                 <BaseButton variant="primary" className="flex justify-end" onClick={() => navigate("/dashboard/new-animal")}>
                     AFEGIR NOU
                 </BaseButton>

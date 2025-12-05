@@ -3,7 +3,7 @@ export interface Animal {
   nom: string;
   especie: string;
   genere: string;
-  edat: number;
+  edat: string;
   mida: string;
   estat: string;
   imatgeUrl: string;

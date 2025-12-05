@@ -44,7 +44,7 @@ export const AnimalTable = () => {
 
   return (
     <div className="p-8">
-      <table className="w-full text-left border-collapse shadow-sm">
+      <table className="w-full text-left border-collapse shadow-sm bg-white">
         <thead>
           <tr className="border-b bg-[--primary-color]">
             <th className="p-3">NOM</th>
@@ -66,11 +66,11 @@ export const AnimalTable = () => {
               <td className="p-3">{a.mida}</td>
 
               <td className="p-2 flex justify-center gap-3">
-                <button className="text-blue-600 hover:text-blue-800" onClick={() => navigate(`/dashboard/update-animal/${a.id}`)}>
+                <button className="text-blue-600 hover:text-blue-800 cursor-pointer" onClick={() => navigate(`/dashboard/update-animal/${a.id}`)}>
                   Edit
                 </button>
 
-                <button className="text-red-600 hover:text-red-800" onClick={() => handleDelete(a.id)}>
+                <button className="text-red-600 hover:text-red-800 cursor-pointer" onClick={() => handleDelete(a.id)}>
                   Delete
                 </button>
               </td>

@@ -4,17 +4,27 @@ import axios from "axios";
 import { useRef, useState } from "react";
 
 export const AddAnimalForm = () => {
-    const [form, setForm] = useState({
-        nom: "",
-        especie: "",
-        genere: "",
-        edat: "",
-        mida: "",
-        estat: ""
-  });
+    const initialForm = {
+      nom: "",
+      especie: "",
+      genere: "",
+      edat: "",
+      mida: "",
+      estat: ""
+  };
 
   const [image, setImage] = useState<File | null>(null);
+  const [form, setForm] = useState(initialForm);
+
   const token = localStorage.getItem("token");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const resetForm = () => {
+    setForm(initialForm);
+    setImage(null);
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +48,7 @@ export const AddAnimalForm = () => {
       });
 
       alert("Animal creat correctament!");
+      resetForm();
     } catch {
       alert("Error al crear animal");
     }
@@ -47,16 +58,14 @@ export const AddAnimalForm = () => {
     setForm({ ...form, [key]: value });
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-  e.preventDefault();
-  const file = e.dataTransfer.files?.[0];
-  if (file) setImage(file);
-};
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file) setImage(file);
+  };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const openFileDialog = () => {
     fileInputRef.current?.click();
@@ -85,7 +94,7 @@ export const AddAnimalForm = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <TextField select label="Edat" value={form.edat} size="small" sx={inputStyle} onChange={(e) => updateField("edat", e.target.value)}>
-                <MenuItem value="cachorro">Cadell</MenuItem>
+                <MenuItem value="cadell">Cadell</MenuItem>
                 <MenuItem value="adult">Adult</MenuItem>
                 <MenuItem value="senior">Senior</MenuItem>
             </TextField>
