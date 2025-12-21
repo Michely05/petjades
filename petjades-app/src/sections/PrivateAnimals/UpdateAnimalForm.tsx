@@ -17,7 +17,7 @@ export const UpdateAnimalForm = () => {
     edat: "",
     mida: "",
     estat: "",
-    imatgeUrl: ""
+    descripcio: ""
   });
 
   const [image, setImage] = useState<File | null>(null);
@@ -41,7 +41,11 @@ export const UpdateAnimalForm = () => {
 
     const formData = new FormData();
 
-    Object.entries(form).forEach(([k, v]) => formData.append(k, v));
+    Object.entries(form).forEach(([k, v]) => {
+      if (v !== null && v !== undefined) {
+        formData.append(k, String(v));
+      }
+    });
 
     if (image) {
       formData.append("image", image); // Solo si el usuario la cambia
@@ -109,10 +113,22 @@ export const UpdateAnimalForm = () => {
           </div>
 
           <TextField select label="Estat" value={form.estat} size="small" sx={inputStyle} onChange={(e) => updateField("estat", e.target.value)}>
-                <MenuItem value="adopcio">En adopció</MenuItem>
-                <MenuItem value="acollida">Acollida</MenuItem>
-                <MenuItem value="pendent">Pendent</MenuItem>
+            <MenuItem value="adopcio">En adopció</MenuItem>
+            <MenuItem value="acollida">Acollida</MenuItem>
+            <MenuItem value="pendent">Pendent</MenuItem>
           </TextField>
+
+          <TextField
+            label="Descripció"
+            value={form.descripcio}
+            multiline
+            rows={4}
+            variant="outlined"
+            fullWidth
+            sx={inputStyle}
+            max-Length={500}
+            onChange={(e) => updateField("descripcio", e.target.value)}
+          />
 
           <div 
             onDrop={handleDrop}

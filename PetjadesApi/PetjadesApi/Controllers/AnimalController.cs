@@ -44,7 +44,8 @@ public class AnimalsController : ControllerBase
             Genere = dto.Genere,
             Edat = dto.Edat,
             Mida = dto.Mida,
-            Estat = dto.Estat
+            Estat = dto.Estat,
+            Descripcio = dto.Descripcio
         };
 
         if (dto.Image != null)
@@ -84,6 +85,7 @@ public class AnimalsController : ControllerBase
         existing.Edat = dto.Edat;
         existing.Mida = dto.Mida;
         existing.Estat = dto.Estat;
+        existing.Descripcio = dto.Descripcio;
 
         // Si envían imagen nueva → sustituir
         if (dto.Image != null)

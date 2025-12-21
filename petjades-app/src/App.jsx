@@ -13,6 +13,7 @@ import { ProtectedRoute } from "./router/ProtectedRoute";
 import { DashboardLayout } from "./components/DashboardLayout";
 import { AddAnimalForm } from "./sections/PrivateAnimals/AddAnimalForm";
 import { UpdateAnimalForm } from "./sections/PrivateAnimals/UpdateAnimalForm";
+import { AnimalDetail } from "./pages/AnimalDetail";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/adopta-gats" element={<Cats />} />
           <Route path="/adopta-gossos" element={<Dogs />} />
+          <Route path="/animal/:id" element={<AnimalDetail />} />
           <Route path="/collabora" element={<Colaborate />} />
           <Route path="/nosaltres" element={<Nosaltres />} />
           <Route path="/acces-privat" element={<PrivateAccess />} />

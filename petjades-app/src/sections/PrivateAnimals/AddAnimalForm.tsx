@@ -10,7 +10,8 @@ export const AddAnimalForm = () => {
       genere: "",
       edat: "",
       mida: "",
-      estat: ""
+      estat: "",
+      descripcio: ""
   };
 
   const [image, setImage] = useState<File | null>(null);
@@ -107,10 +108,23 @@ export const AddAnimalForm = () => {
           </div>
 
           <TextField select label="Estat" value={form.estat} size="small" sx={inputStyle} onChange={(e) => updateField("estat", e.target.value)}>
-                <MenuItem value="adopcio">En adopció</MenuItem>
-                <MenuItem value="acollida">Acollida</MenuItem>
-                <MenuItem value="pendent">Pendent</MenuItem>
+            <MenuItem value="adopcio">En adopció</MenuItem>
+            <MenuItem value="acollida">Acollida</MenuItem>
+            <MenuItem value="pendent">Pendent</MenuItem>
           </TextField>
+
+          <TextField
+            label="Descripció"
+            value={form.descripcio}
+            multiline
+            rows={4}
+            variant="outlined"
+            fullWidth
+            sx={inputStyle}
+            max-Length={500}
+            onChange={(e) => updateField("descripcio", e.target.value)}
+          />
+
 
           <div 
             onDrop={handleDrop}

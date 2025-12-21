@@ -6,5 +6,6 @@ export interface Animal {
   edat: string;
   mida: string;
   estat: string;
+  descripcio: string;
   imatgeUrl: string;
 }
