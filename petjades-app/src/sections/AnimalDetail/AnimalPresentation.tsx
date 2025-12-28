@@ -5,21 +5,126 @@ import axios from "axios";
 import passosAdopcio from "../../assets/img/passos-adopcio.png";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, TextField } from "@mui/material";
 import { BaseButton } from "../../components/BaseButton";
+import { Modal } from "../../components/Modal";
+import { useModal } from "../../hooks/useModal";
+import { isEmpty, isValidEmail, isMessageTooLong } from "../../utils/formValidators";
 
 export const AnimalPresentation = () => {
 
     const {id} = useParams();
     const [animal, setAnimal] = useState<Animal | null>(null);
     const [purpose, setPurpose] = useState("");
+    const { openModal, modalProps } = useModal();
 
+    const [form, setForm] = useState({
+        nom: "",
+        cognom: "",
+        email: "",
+        missatge: ""
+    });
+
+    const validateForm = () => {
+        if (isEmpty(form.nom) ||
+            isEmpty(form.cognom) ||
+            isEmpty(form.email) ||
+            isEmpty(form.missatge)) {
+            openModal({
+            title: "Formulari incomplet",
+            message: "Tots els camps són obligatoris.",
+            type: "error"
+            });
+            return false;
+        }
+
+        if (!isValidEmail(form.email)) {
+            openModal({
+            title: "Correu invàlid",
+            message: "Introdueix un correu electrònic vàlid.",
+            type: "error"
+            });
+            return false;
+        }
+
+        if (isMessageTooLong(form.missatge)) {
+            openModal({
+                title: "Missatge massa llarg",
+                message: "El missatge no pot superar els 250 caràcters.",
+                type: "error"
+            });
+            return false;
+        }
+
+        if (!purpose) {
+            openModal({
+            title: "Falta selecció",
+            message: "Has de seleccionar si estàs interessat/da en adopció o acollida.",
+            type: "error"
+            });
+            return false;
+        }
+
+        return true;
+    };
 
     useEffect(() => {
         axios.get<Animal>(`https://localhost:7151/animals/${id}`)
             .then(response => {
                 setAnimal(response.data);
             })
-            .catch(() => alert("No s'ha pogut carregar l'animal"));
-    }, [id]);
+            .catch(() => {
+                openModal({
+                    title: "Error",
+                    message: "No s'ha pogut carregar la informació de l'animal.",
+                    type: "error"
+                });
+            });
+    }, [id, openModal]);
+
+    const handleChange = (key: string, value: string) => {
+        setForm({ ...form, [key]: value });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!validateForm()) return;
+
+        try {
+            await axios.post("https://localhost:7151/requests", {
+                nom: form.nom,
+                cognom: form.cognom,
+                email: form.email,
+                missatge: form.missatge,
+                tipus: purpose,
+                animalId: animal?.id
+            });
+
+        openModal({
+            title: "Sol·licitud enviada",
+            message: "La teva sol·licitud s'ha enviat correctament. Ens posarem en contacte amb tu aviat.",
+            type: "success"
+        });
+
+
+
+        // reset
+        setForm({
+            nom: "",
+            cognom: "",
+            email: "",
+            missatge: "",
+        });
+        setPurpose("");
+
+        } catch {
+            openModal({
+                title: "Error",
+                message: "S'ha produït un error enviant la sol·licitud.",
+                type: "error"
+            });
+        }
+    };
+
 
     if (!animal) {
         return (
@@ -122,10 +227,12 @@ export const AnimalPresentation = () => {
                 </h2>
                 <div className="flex justify-center">
                     <div className="w-full max-w-md sm:max-w-lg md:max-w-xl border-2 rounded-md border-[#6b945a] bg-[#f6fbf4] p-6 shadow-sm">
-                        <form className="flex flex-col">
+                        <form className="flex flex-col" onSubmit={handleSubmit}>
                             <Stack spacing={3}>
                                 <TextField
                                     label="Nom"
+                                    value={form.nom}
+                                    onChange={(e) => handleChange("nom", e.target.value)}
                                     variant="outlined"
                                     size="small"
                                     fullWidth
@@ -140,6 +247,8 @@ export const AnimalPresentation = () => {
                                 />
                                 <TextField
                                     label="Cognom"
+                                    value={form.cognom}
+                                    onChange={(e) => handleChange("cognom", e.target.value)}
                                     variant="outlined"
                                     size="small"
                                     fullWidth
@@ -155,6 +264,8 @@ export const AnimalPresentation = () => {
                                 <TextField
                                     label="Correu electrònic"
                                     type="email"
+                                    value={form.email}
+                                    onChange={(e) => handleChange("email", e.target.value)}
                                     variant="outlined"
                                     size="small"
                                     fullWidth
@@ -169,6 +280,8 @@ export const AnimalPresentation = () => {
                                 />
                                 <TextField
                                     label="Missatge"
+                                    value={form.missatge}
+                                    onChange={(e) => handleChange("missatge", e.target.value)}
                                     multiline
                                     rows={4}
                                     variant="outlined"
@@ -194,42 +307,16 @@ export const AnimalPresentation = () => {
                                         Estàs interessat/da en:
                                     </FormLabel>
 
-                                    <RadioGroup
-                                        row
-                                        value={purpose}
-                                        onChange={(e) => setPurpose(e.target.value)}
-                                    >
-                                        <FormControlLabel
-                                        value="adopcio"
-                                        control={
-                                            <Radio
-                                            sx={{
-                                                color: "#6b945a",
-                                                "&.Mui-checked": { color: "#6b945a" }
-                                            }}
-                                            />
-                                        }
-                                        label="Adopció"
-                                        />
+                                    <RadioGroup row value={purpose} onChange={(e) => setPurpose(e.target.value)}>
+                                        <FormControlLabel value="adopcio" control={<Radio sx={{color: "#6b945a","&.Mui-checked": { color: "#6b945a" }}} />} label="Adopció" />
 
-                                        <FormControlLabel
-                                        value="acollida"
-                                        control={
-                                            <Radio
-                                            sx={{
-                                                color: "#6b945a",
-                                                "&.Mui-checked": { color: "#6b945a" }
-                                            }}
-                                            />
-                                        }
-                                        label="Acollida"
-                                        />
+                                        <FormControlLabel value="acollida" control={<Radio sx={{color: "#6b945a", "&.Mui-checked": { color: "#6b945a" }}} />} label="Acollida" />
                                     </RadioGroup>
                                 </FormControl>
                             </Stack>
 
                             <div className="flex justify-center pt-4">
-                                <BaseButton className="w-full sm:w-auto" variant="primary">
+                                <BaseButton className="w-full sm:w-auto" variant="primary" type="submit">
                                     ENVIAR
                                 </BaseButton>
                             </div>
@@ -237,6 +324,9 @@ export const AnimalPresentation = () => {
                     </div>
                 </div>
             </section>
+
+            <Modal {...modalProps} />
+
         </>
     );
 }

@@ -11,5 +11,6 @@ namespace PetjadesApi
         {
         }
         public DbSet<Animal> Animals { get; set; }
+        public DbSet<Request> Requests { get; set; }
     }
 }

@@ -1,7 +1,48 @@
 import { Stack, TextField } from '@mui/material';
 import { BaseButton } from '../../components/BaseButton';
+import { useState } from 'react';
+import axios from 'axios';
 
 export const ColaborateContact = () => {
+
+    const [form, setForm] = useState({
+        nom: "",
+        cognom: "",
+        email: "",
+        missatge: ""
+      });
+    
+      const handleChange = (key: string, value: string) => {
+        setForm({ ...form, [key]: value });
+      };
+    
+      const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+    
+        try {
+          await axios.post("https://localhost:7151/requests", {
+            nom: form.nom,
+            cognom: form.cognom,
+            email: form.email,
+            missatge: form.missatge,
+            tipus: "colaborar"
+          });
+    
+          alert("Missatge enviat correctament!");
+    
+          // reset
+          setForm({
+            nom: "",
+            cognom: "",
+            email: "",
+            missatge: ""
+          });
+    
+        } catch {
+          alert("Error enviant el missatge");
+        }
+      };
+
     return (
         <section className="px-4 sm:px-6 md:px-12 lg:px-16 py-8">
             <h2
@@ -13,10 +54,12 @@ export const ColaborateContact = () => {
 
             <div className="flex justify-center">
                 <div className="w-full max-w-md sm:max-w-lg md:max-w-xl border-2 rounded-md border-[#6b945a] bg-[#f6fbf4] p-6 shadow-sm">
-                    <form className="flex flex-col">
+                    <form className="flex flex-col" onSubmit={handleSubmit}>
                         <Stack spacing={3}>
                             <TextField
                                 label="Nom"
+                                value={form.nom}
+                                onChange={(e) => handleChange("nom", e.target.value)}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
@@ -31,6 +74,8 @@ export const ColaborateContact = () => {
                             />
                             <TextField
                                 label="Cognom"
+                                value={form.cognom}
+                                onChange={(e) => handleChange("cognom", e.target.value)}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
@@ -46,6 +91,8 @@ export const ColaborateContact = () => {
                             <TextField
                                 label="Correu electrònic"
                                 type="email"
+                                value={form.email}
+                                onChange={(e) => handleChange("email", e.target.value)}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
@@ -62,6 +109,8 @@ export const ColaborateContact = () => {
                                 label="Com vols col·laborar?"
                                 multiline
                                 rows={4}
+                                value={form.missatge}
+                                onChange={(e) => handleChange("missatge", e.target.value)}
                                 variant="outlined"
                                 fullWidth
                                 sx={{
@@ -76,7 +125,7 @@ export const ColaborateContact = () => {
                         </Stack>
 
                         <div className="flex justify-center pt-4">
-                            <BaseButton className="w-full sm:w-auto" variant="primary">
+                            <BaseButton className="w-full sm:w-auto" variant="primary" type='submit'>
                                 ENVIAR
                             </BaseButton>
                         </div>
