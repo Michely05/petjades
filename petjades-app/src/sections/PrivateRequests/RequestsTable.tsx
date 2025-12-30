@@ -3,11 +3,13 @@ import axios from "axios";
 import { Request } from "../../types/Request";
 import { Modal } from "../../components/Modal";
 import { useModal } from "../../hooks/useModal";
+import { useNavigate } from "react-router-dom";
 
 export const RequestsTable = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const token = localStorage.getItem("token");
   const { openModal, modalProps } = useModal();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get("https://localhost:7151/requests", {
@@ -60,7 +62,7 @@ export const RequestsTable = () => {
                 </td>
 
                 <td className="p-2 flex justify-center gap-3">
-                  <button className="text-blue-600 hover:text-blue-800 cursor-pointer">
+                  <button className="text-blue-600 hover:text-blue-800 cursor-pointer" onClick={() => navigate(`/dashboard/private-requests/reply/${req.id}`)}>
                     Respondre
                   </button>
 

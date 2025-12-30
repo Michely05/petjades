@@ -23,7 +23,9 @@ public class RequestRepository : IRequestRepository
 
     public async Task<Request?> GetByIdAsync(int id)
     {
-        return await _context.Requests.FindAsync(id);
+        return await _context.Requests
+            .Include(r => r.Animal)
+            .FirstOrDefaultAsync(r => r.Id == id);
     }
 
     public async Task<Request> CreateAsync(Request request)

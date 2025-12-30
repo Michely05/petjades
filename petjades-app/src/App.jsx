@@ -14,6 +14,7 @@ import { DashboardLayout } from "./components/DashboardLayout";
 import { AddAnimalForm } from "./sections/PrivateAnimals/AddAnimalForm";
 import { UpdateAnimalForm } from "./sections/PrivateAnimals/UpdateAnimalForm";
 import { AnimalDetail } from "./pages/AnimalDetail";
+import { ReplyRequestForm } from "./sections/PrivateRequests/ReplyRequestForm";
 
 function App() {
   return (
@@ -41,6 +42,10 @@ function App() {
             <Route path="agenda" element={<PrivateAgenda />} />
             <Route path="new-animal" element={<AddAnimalForm />} />
             <Route path="update-animal/:id" element={<UpdateAnimalForm />} />
+            <Route
+              path="private-requests/reply/:id"
+              element={<ReplyRequestForm />}
+            />
           </Route>
         </Routes>
       </main>

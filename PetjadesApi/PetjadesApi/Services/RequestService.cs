@@ -30,6 +30,12 @@ public class RequestService : IRequestService
         }).ToList();
     }
 
+    public async Task<Request?> GetByIdAsync(int id)
+    {
+        return await _repo.GetByIdAsync(id);
+    }
+
+
     public Task<Request> CreateAsync(Request request) =>
         _repo.CreateAsync(request);
 
@@ -45,10 +51,23 @@ public class RequestService : IRequestService
 
         await _email.SendAsync(
             request.Email,
-            "Resposta a la teva sol·licitud – Petjades",
-            resposta
+            "Resposta a la teva sol·licitud",
+            BuildEmailBody(request, resposta)
         );
 
         return true;
     }
+
+    private string BuildEmailBody(Request request, string resposta)
+    {
+        return $@"
+                <p>Hola {request.Nom},</p>
+
+                <p>{resposta}</p>
+
+                <p>Atentament,<br/>
+                <strong>Equip Petjades</strong></p>
+        ";
+    }
+
 }
