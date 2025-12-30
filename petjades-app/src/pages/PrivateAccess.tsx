@@ -21,7 +21,7 @@ export const PrivateAccess = () => {
         if (isEmpty(email) || isEmpty(password)) {
             openModal({
             title: "Formulari incomplet",
-            message: "Manca el correu electrònic o la contrasenya.",
+            message: "Manca el correu electrònic i/o la contrasenya.",
             type: "error"
             });
             return false;

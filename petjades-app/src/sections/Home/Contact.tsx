@@ -3,8 +3,13 @@ import { Stack, TextField } from "@mui/material";
 import { BaseButton } from "../../components/BaseButton";
 import { useState } from "react";
 import axios from "axios";
+import { Modal } from "../../components/Modal";
+import { useModal } from "../../hooks/useModal";
+import { isEmpty, isValidEmail, isMessageTooLong } from "../../utils/formValidators";
 
 export const Contact = () => {
+
+  const { openModal, modalProps } = useModal();
 
   const [form, setForm] = useState({
     nom: "",
@@ -13,12 +18,48 @@ export const Contact = () => {
     missatge: ""
   });
 
+  const validateForm = () => {
+    if (isEmpty(form.nom) ||
+      isEmpty(form.cognom) ||
+      isEmpty(form.email) ||
+      isEmpty(form.missatge)) {
+      openModal({
+        title: "Formulari incomplet",
+        message: "Tots els camps són obligatoris.",
+        type: "error"
+      });
+      return false;
+    }
+
+    if (!isValidEmail(form.email)) {
+      openModal({
+      title: "Correu invàlid",
+      message: "Introdueix un correu electrònic vàlid.",
+      type: "error"
+      });
+      return false;
+    }
+
+    if (isMessageTooLong(form.missatge)) {
+      openModal({
+        title: "Missatge massa llarg",
+        message: "El missatge no pot superar els 250 caràcters.",
+        type: "error"
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleChange = (key: string, value: string) => {
     setForm({ ...form, [key]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
 
     try {
       await axios.post("https://localhost:7151/requests", {
@@ -29,7 +70,11 @@ export const Contact = () => {
         tipus: "general"
       });
 
-      alert("Missatge enviat correctament!");
+      openModal({
+        title: "Sol·licitud enviada",
+        message: "La teva sol·licitud s'ha enviat correctament. Ens posarem en contacte amb tu el més aviat possible!",
+        type: "success"
+      });
 
       // reset
       setForm({
@@ -40,7 +85,11 @@ export const Contact = () => {
       });
 
     } catch {
-      alert("Error enviant el missatge");
+        openModal({
+          title: "Error",
+          message: "S'ha produït un error enviant la sol·licitud.",
+          type: "error"
+        });
     }
   };
   
@@ -133,6 +182,9 @@ export const Contact = () => {
         </div>
 
       </div>
+
+      <Modal {...modalProps} />
+      
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { ModalProps } from "../types/ModalProps";
+import { ConfirmModalProps } from "../types/ModalProps";
 
 import {
   Dialog,
@@ -20,13 +20,14 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export const Modal = ({
+export const ConfirmModal = ({
   obert,
   titol,
   missatge,
-  tipus = "info",
-  onClose
-}: ModalProps) => {
+  onConfirm,
+  onCancel
+}: ConfirmModalProps) => {
+
   const colors = {
     success: "#2e7d32",
     error: "#d32f2f",
@@ -34,19 +35,8 @@ export const Modal = ({
   };
 
   return (
-    <Dialog
-      open={obert}
-      keepMounted
-      onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-      slots={{
-        transition: Transition
-      }}
-    >
-      <DialogTitle
-        sx={{ color: colors[tipus], fontWeight: 600 }}
-      >
+    <Dialog open={obert} onClose={onCancel} maxWidth="xs" fullWidth>
+      <DialogTitle sx={{color: colors.info,fontWeight: 600 }}>
         {titol}
       </DialogTitle>
 
@@ -55,13 +45,15 @@ export const Modal = ({
       </DialogContent>
 
       <DialogActions>
-        <Button
-          onClick={onClose}
-          variant="contained"
-          sx={{ backgroundColor: colors[tipus] }}
-        >
-          D'acord
+
+        <Button onClick={onConfirm} variant="contained" color="success">
+          Sí
         </Button>
+
+        <Button onClick={onCancel} variant="contained" color="error">
+          No
+        </Button>
+
       </DialogActions>
     </Dialog>
   );

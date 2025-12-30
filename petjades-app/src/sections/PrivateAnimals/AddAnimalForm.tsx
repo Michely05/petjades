@@ -2,6 +2,10 @@ import { TextField, MenuItem } from "@mui/material";
 import { BaseButton } from '../../components/BaseButton';
 import axios from "axios";
 import { useRef, useState } from "react";
+import { inputStyle } from "../../components/InputStyle";
+import { Modal } from "../../components/Modal";
+import { useModal } from "../../hooks/useModal";
+import { isEmpty, isValidEmail, isMessageTooLong } from "../../utils/formValidators";
 
 export const AddAnimalForm = () => {
     const initialForm = {
@@ -20,6 +24,41 @@ export const AddAnimalForm = () => {
   const token = localStorage.getItem("token");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const { openModal, modalProps } = useModal();
+
+  const validateForm = () => {
+    if ( isEmpty(form.nom) || isEmpty(form.descripcio) || isEmpty(form.especie) || isEmpty(form.genere) || isEmpty(form.edat) || isEmpty(form.mida) || isEmpty(form.estat)) {
+      openModal({
+        title: "Formulari incomplet",
+        message: "Tots els camps són obligatoris.",
+        type: "error"
+      });
+
+      return false;
+    }
+
+      if (isMessageTooLong(form.descripcio)) {
+        openModal({
+          title: "Missatge massa llarg",
+          message: "La descripció no pot superar els 250 caràcters.",
+          type: "error"
+        });
+      return false;
+    }
+
+    if (!image) {
+      openModal({
+        title: "Imatge requerida",
+        message: "Has d'afegir almenys una imatge del nou animal.",
+        type: "error"
+      });
+
+      return false;
+    }
+
+    return true;
+  };
+
   const resetForm = () => {
     setForm(initialForm);
     setImage(null);
@@ -29,6 +68,8 @@ export const AddAnimalForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
 
     try {
       const formData = new FormData();
@@ -48,15 +89,24 @@ export const AddAnimalForm = () => {
         }
       });
 
-      alert("Animal creat correctament!");
+      openModal({
+        title: "Animal creat",
+        message: "S'ha afegit el nou animal correctament!",
+        type: "success"
+      });
+
       resetForm();
+
     } catch {
-      alert("Error al crear animal");
+      openModal({
+        title: "Error",
+        message: "Hi ha hagut un error creant el nou animal. Si us plau, torna-ho a intentar.",
+        type: "error"
+      });
     }
   };
 
-  const updateField = (key: string, value: string) =>
-    setForm({ ...form, [key]: value });
+  const updateField = (key: string, value: string) => setForm({ ...form, [key]: value });
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -155,15 +205,8 @@ export const AddAnimalForm = () => {
 
         </form>
       </div>
+
+      <Modal {...modalProps} />
     </div>
   );
-};
-
-const inputStyle = {
-  "& label.Mui-focused": { color: "#6b945a" },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": { borderColor: "#6b945a", borderWidth: "2px" },
-    "&:hover fieldset": { borderColor: "#6b945a" },
-    "&.Mui-focused fieldset": { borderColor: "#6b945a" }
-  }
 };

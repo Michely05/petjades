@@ -3,12 +3,15 @@ import { BaseButton } from '../../components/BaseButton';
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Modal } from "../../components/Modal";
+import { useModal } from "../../hooks/useModal";
 
 export const UpdateAnimalForm = () => {
 
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const { openModal, modalProps } = useModal();
 
   const [form, setForm] = useState({
     nom: "",
@@ -26,15 +29,31 @@ export const UpdateAnimalForm = () => {
   useEffect(() => {
     axios.get(`https://localhost:7151/animals/${id}`)
       .then(res => {
-        setForm(res.data);
-        setPreview(res.data.imatgeUrl ? "https://localhost:7151" + res.data.imatgeUrl : null);
+        const a = res.data;
+
+        setForm({
+          nom: a.nom ?? "",
+          especie: a.especie ?? "",
+          genere: a.genere ?? "",
+          edat: a.edat ?? "",
+          mida: a.mida ?? "",
+          estat: a.estat ?? "",
+          descripcio: a.descripcio ?? ""
+        });
+
+        setPreview(a.imatgeUrl ? "https://localhost:7151" + a.imatgeUrl : null);
       })
-      .catch(() => alert("No s'ha pogut carregar l'animal"));
+      .catch(() => {
+        openModal({
+          title: "Error",
+          message: "No s'ha pogut carregar la informació de l'animal.",
+          type: "error"
+        });
+      });
   }, [id]);
 
 
-  const updateField = (key: string, value: string) =>
-    setForm({ ...form, [key]: value });
+  const updateField = (key: string, value: string) => setForm(prev => ({ ...prev, [key]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,8 +77,12 @@ export const UpdateAnimalForm = () => {
       }
     });
 
-    alert("Animal actualitzat!");
-    navigate("/dashboard/private-animals");
+    openModal({
+      title: "Animal actualitzat",
+      message: "La fitxa de l'animal s'ha actualitzat correctament!",
+      type: "success",
+      onClose: () => navigate("/dashboard/private-animals")
+    });
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -100,7 +123,7 @@ export const UpdateAnimalForm = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <TextField select label="Edat" value={form.edat} size="small" sx={inputStyle} onChange={(e) => updateField("edat", e.target.value)}>
-                <MenuItem value="cachorro">Cadell</MenuItem>
+                <MenuItem value="cadell">Cadell</MenuItem>
                 <MenuItem value="adult">Adult</MenuItem>
                 <MenuItem value="senior">Senior</MenuItem>
             </TextField>
@@ -165,6 +188,9 @@ export const UpdateAnimalForm = () => {
 
         </form>
       </div>
+
+      <Modal {...modalProps} />
+
     </div>
   );
 };

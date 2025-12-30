@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { ConfirmModal } from "../../components/ConfirmModal";
+import { Modal } from "../../components/Modal";
+import { useModal } from "../../hooks/useModal";
 
 interface Animal {
   id: number;
@@ -17,6 +19,10 @@ export const AnimalTable = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  const {openModal, modalProps} = useModal();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [animalToDelete, setAnimalToDelete] = useState<number | null>(null);
+
   useEffect(() => {
     axios.get("https://localhost:7151/animals", {
       headers: { Authorization: "Bearer " + token }
@@ -25,20 +31,32 @@ export const AnimalTable = () => {
     .catch(err => console.error("ERROR loading animals:", err));
   }, []);
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Segur que vols eliminar aquest animal?")) return;
+  const confirmDelete = async () => {
+    if (!animalToDelete) return;
 
     try {
-      await axios.delete(`https://localhost:7151/animals/${id}`, {
+      await axios.delete(`https://localhost:7151/animals/${animalToDelete}`, {
         headers: { Authorization: "Bearer " + token }
       });
 
-      setAnimals((prev) => prev.filter((a) => a.id !== id));
+      setAnimals((prev) => prev.filter((a) => a.id !== animalToDelete));
 
-      alert("Animal eliminat correctament!");
+      openModal({
+        title: "Animal eliminat",
+        message: "La fitxa de l'animal s'ha eliminat correctament.",
+        type: "success"
+      });
+
     } catch (error) {
-      console.error(error);
-      alert("Error al eliminar l'animal");
+        openModal({
+        title: "Error",
+        message: "No s'ha pogut eliminar la fitxa de l'animal.",
+        type: "error"
+      });
+
+    } finally {
+      setConfirmOpen(false);
+      setAnimalToDelete(null);
     }
   };
 
@@ -70,7 +88,8 @@ export const AnimalTable = () => {
                   Edit
                 </button>
 
-                <button className="text-red-600 hover:text-red-800 cursor-pointer" onClick={() => handleDelete(a.id)}>
+                <button className="text-red-600 hover:text-red-800 cursor-pointer"
+                onClick={() => {setAnimalToDelete(a.id); setConfirmOpen(true);}}>
                   Delete
                 </button>
               </td>
@@ -78,6 +97,19 @@ export const AnimalTable = () => {
           ))}
         </tbody>
       </table>
+
+      <Modal {...modalProps} />
+
+      <ConfirmModal
+        obert={confirmOpen}
+        titol="Eliminar animal"
+        missatge="Estàs segur que vols eliminar aquesta mascota? Aquesta acció no es pot desfer."
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setAnimalToDelete(null);
+        }}
+      />
     </div>
   );
 };

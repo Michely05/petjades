@@ -5,3 +5,11 @@ export type ModalProps = {
   tipus?: "success" | "error" | "info";
   onClose: () => void;
 };
+
+export type ConfirmModalProps = {
+  obert: boolean;
+  titol: string;
+  missatge: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+};

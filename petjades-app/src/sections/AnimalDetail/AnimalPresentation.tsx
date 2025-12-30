@@ -99,22 +99,21 @@ export const AnimalPresentation = () => {
                 animalId: animal?.id
             });
 
-        openModal({
-            title: "Sol·licitud enviada",
-            message: "La teva sol·licitud s'ha enviat correctament. Ens posarem en contacte amb tu aviat.",
-            type: "success"
-        });
+            openModal({
+                title: "Sol·licitud enviada",
+                message: "La teva sol·licitud s'ha enviat correctament. Ens posarem en contacte amb tu el més aviat possible!",
+                type: "success"
+            });
 
-
-
-        // reset
-        setForm({
-            nom: "",
-            cognom: "",
-            email: "",
-            missatge: "",
-        });
-        setPurpose("");
+            // reset
+            setForm({
+                nom: "",
+                cognom: "",
+                email: "",
+                missatge: "",
+            });
+            
+            setPurpose("");
 
         } catch {
             openModal({
