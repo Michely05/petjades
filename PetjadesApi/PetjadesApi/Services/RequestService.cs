@@ -26,7 +26,7 @@ public class RequestService : IRequestService
             Email = r.Email,
             Tipus = r.Tipus,
             AnimalNom = r.Animal?.Nom,
-            RespostaEnviada = r.RespostaEnviada
+            Resposta = r.Resposta
         }).ToList();
     }
 

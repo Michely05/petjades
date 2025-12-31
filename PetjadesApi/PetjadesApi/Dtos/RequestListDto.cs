@@ -7,6 +7,7 @@
         public string Email { get; set; }
         public string Tipus { get; set; }
         public string? AnimalNom { get; set; }
+        public string? Resposta { get; set; }
         public bool RespostaEnviada { get; set; }
     }
 }

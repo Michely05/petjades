@@ -22,7 +22,10 @@ export const ReplyRequestForm = () => {
     axios.get(`https://localhost:7151/requests/${id}`, {
       headers: { Authorization: "Bearer " + token }
     })
-    .then(res => setRequest(res.data))
+    .then(res => {
+      setRequest(res.data);
+      setReply(res.data.resposta || "");
+    })
     .catch(() => {
       openModal({
         title: "Error",
