@@ -1,7 +1,9 @@
+import { Calendar } from "../sections/PrivateAgenda/Calendar"
+
 export const PrivateAgenda = () => {
     return (
         <div>
-            <p>Agenda</p>
+            <Calendar />
         </div>
     )
 }

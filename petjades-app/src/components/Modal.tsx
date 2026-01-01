@@ -9,7 +9,7 @@ import {
   Slide
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { forwardRef } from "react";
+import { Children, forwardRef } from "react";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -25,7 +25,8 @@ export const Modal = ({
   titol,
   missatge,
   tipus = "info",
-  onClose
+  onClose,
+  children
 }: ModalProps) => {
   const colors = {
     success: "#2e7d32",
@@ -52,6 +53,7 @@ export const Modal = ({
 
       <DialogContent>
         <p>{missatge}</p>
+        {children}
       </DialogContent>
 
       <DialogActions>

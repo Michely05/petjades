@@ -1,9 +1,12 @@
+import { ReactNode } from "react";
+
 export type ModalProps = {
   obert: boolean;
   titol: string;
-  missatge: string;
+  missatge?: string;
   tipus?: "success" | "error" | "info";
   onClose: () => void;
+  children?: ReactNode;
 };
 
 export type ConfirmModalProps = {
