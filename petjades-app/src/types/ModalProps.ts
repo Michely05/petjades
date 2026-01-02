@@ -6,6 +6,7 @@ export type ModalProps = {
   missatge?: string;
   tipus?: "success" | "error" | "info";
   onClose: () => void;
+  onConfirm?: () => void;
   children?: ReactNode;
 };
 

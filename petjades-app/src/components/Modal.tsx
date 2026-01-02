@@ -9,7 +9,7 @@ import {
   Slide
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { Children, forwardRef } from "react";
+import { forwardRef } from "react";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -26,12 +26,21 @@ export const Modal = ({
   missatge,
   tipus = "info",
   onClose,
+  onConfirm,
   children
 }: ModalProps) => {
   const colors = {
     success: "#2e7d32",
     error: "#d32f2f",
     info: "#6b945a"
+  };
+
+  const handleConfirm = () => {
+    if (onConfirm) {
+      onConfirm();
+    } else {
+      onClose();
+    }
   };
 
   return (
@@ -51,14 +60,14 @@ export const Modal = ({
         {titol}
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent onClick={(e) => e.stopPropagation()}>
         <p>{missatge}</p>
         {children}
       </DialogContent>
 
       <DialogActions>
         <Button
-          onClick={onClose}
+          onClick={handleConfirm}
           variant="contained"
           sx={{ backgroundColor: colors[tipus] }}
         >

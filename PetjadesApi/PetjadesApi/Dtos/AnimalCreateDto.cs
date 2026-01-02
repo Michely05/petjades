@@ -1,14 +1,15 @@
 ﻿namespace PetjadesApi.Dtos
 {
-    public class AppointmentCreateDto
+    public class AnimalCreateDto
     {
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
-        public string Title { get; set; }
-        public string PersonName { get; set; }
-        public string PersonEmail { get; set; }
-        public int? RequestId { get; set; }
-        public int? AnimalId { get; set; }
+        public string Nom { get; set; }
+        public string Especie { get; set; }
+        public string Genere { get; set; }
+        public string Edat { get; set; }
+        public string Mida { get; set; }
+        public string Estat { get; set; }
+        public string Descripcio { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }
 

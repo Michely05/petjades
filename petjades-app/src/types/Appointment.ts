@@ -1,9 +1,10 @@
 export interface Appointment {
   id: number;
   title: string;
-  email: string;
-  notes: string;
-  start: string;
-  end: string;
+  startDate: string;
+  endDate: string;
   status: "pending" | "confirmed" | "cancelled";
+  personName: string;
+  personEmail: string;
+  animalName?: string;
 }

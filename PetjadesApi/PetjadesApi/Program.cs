@@ -25,7 +25,10 @@ builder.Services.AddScoped<IAnimalService, AnimalService>();
 
 builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<IRequestService, RequestService>();
+
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 builder.Services.AddCors(options =>

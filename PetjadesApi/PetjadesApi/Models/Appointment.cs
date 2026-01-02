@@ -7,14 +7,14 @@ namespace PetjadesApi.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime Start { get; set; }
-
-        [Required]
-        public DateTime End { get; set; }
-
-        [Required]
         [MaxLength(200)]
         public string Title { get; set; } = null!;
+
+        [Required]
+        public DateTime StartDate { get; set; }
+
+        [Required]
+        public DateTime EndDate { get; set; }
 
         [Required]
         [MaxLength(100)]

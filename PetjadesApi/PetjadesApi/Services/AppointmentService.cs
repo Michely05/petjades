@@ -7,28 +7,87 @@ namespace PetjadesApi.Services;
 
 public class AppointmentService : IAppointmentService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IAppointmentRepository _repo;
 
-    public AppointmentService(ApplicationDbContext context)
+    public AppointmentService(IAppointmentRepository repo)
     {
-        _context = context;
+        _repo = repo;
     }
 
     public async Task<List<AppointmentDto>> GetAllAsync()
     {
-        return await _context.Appointments
-            .Include(a => a.Animal)
-            .Select(a => new AppointmentDto
-            {
-                Id = a.Id,
-                Title = a.Title,
-                Start = a.Start,
-                End = a.End,
-                Status = a.Status,
-                PersonName = a.PersonName,
-                PersonEmail = a.PersonEmail,
-                AnimalName = a.Animal != null ? a.Animal.Nom : null
-            })
-            .ToListAsync();
+        var appointments = await _repo.GetAllAsync();
+
+        return appointments.Select(a => new AppointmentDto
+        {
+            Id = a.Id,
+            Title = a.Title,
+            StartDate = a.StartDate,
+            EndDate = a.EndDate,
+            Status = a.Status,
+            PersonName = a.PersonName,
+            PersonEmail = a.PersonEmail,
+            AnimalName = a.Animal?.Nom
+        }).ToList();
+    }
+
+    public async Task<Appointment?> GetByIdAsync(int id)
+    {
+        return await _repo.GetByIdAsync(id);
+    }
+
+    public async Task<Appointment> CreateAsync(AppointmentCreateDto dto)
+    {
+        var appointment = new Appointment
+        {
+            Title = dto.Title,
+            PersonName = dto.PersonName,
+            PersonEmail = dto.PersonEmail,
+            //Notes = dto.Notes,
+            StartDate = dto.StartDate,
+            EndDate = dto.EndDate,
+            Status = "pending",
+            AnimalId = dto.AnimalId
+        };
+
+        await _repo.AddAsync(appointment);
+        return appointment;
+    }
+
+    public async Task<bool> UpdateAsync(int id, AppointmentUpdateDto dto)
+    {
+        var appointment = await _repo.GetByIdAsync(id);
+        if (appointment == null) return false;
+
+        appointment.Title = dto.Title;
+        appointment.PersonName = dto.PersonName;
+        appointment.PersonEmail = dto.PersonEmail;
+        appointment.StartDate = dto.StartDate;
+        appointment.EndDate = dto.EndDate;
+        appointment.AnimalId = dto.AnimalId;
+
+        await _repo.UpdateAsync(appointment);
+        return true;
+    }
+
+
+    public async Task<bool> UpdateStatusAsync(int id, string status)
+    {
+        var appointment = await _repo.GetByIdAsync(id);
+        if (appointment == null) return false;
+
+        appointment.Status = status;
+        await _repo.UpdateAsync(appointment);
+
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var appointment = await _repo.GetByIdAsync(id);
+        if (appointment == null) return false;
+
+        await _repo.DeleteAsync(appointment);
+        return true;
     }
 }
