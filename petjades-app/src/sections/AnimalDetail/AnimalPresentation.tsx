@@ -8,6 +8,7 @@ import { BaseButton } from "../../components/BaseButton";
 import { Modal } from "../../components/Modal";
 import { useModal } from "../../hooks/useModal";
 import { isEmpty, isValidEmail, isMessageTooLong } from "../../utils/formValidators";
+import { API_URL } from "../../config/api";
 
 export const AnimalPresentation = () => {
 
@@ -67,7 +68,7 @@ export const AnimalPresentation = () => {
     };
 
     useEffect(() => {
-        axios.get<Animal>(`https://localhost:7151/animals/${id}`)
+        axios.get<Animal>(`https://${API_URL}/animals/${id}`)
             .then(response => {
                 setAnimal(response.data);
             })
@@ -90,7 +91,7 @@ export const AnimalPresentation = () => {
         if (!validateForm()) return;
 
         try {
-            await axios.post("https://localhost:7151/requests", {
+            await axios.post(`https://${API_URL}/requests`, {
                 nom: form.nom,
                 cognom: form.cognom,
                 email: form.email,
@@ -143,7 +144,7 @@ export const AnimalPresentation = () => {
 
                     <div className="md:col-span-2 flex justify-center">
                         <img
-                            src={`https://localhost:7151${animal?.imatgeUrl}`}
+                            src={`https://${API_URL}${animal?.imatgeUrl}`}
                             alt={animal?.nom}
                             className="max-h-full max-w-full object-contain"
                         />
@@ -185,7 +186,7 @@ export const AnimalPresentation = () => {
                     {[1,2,3].map(i => (
                     <img
                     key={i}
-                    src={`https://localhost:7151${animal.imatgeUrl}`}
+                    src={`https://${API_URL}${animal.imatgeUrl}`}
                     alt={animal.nom}
                     className="w-full h-[480px] object-cover"
                     />

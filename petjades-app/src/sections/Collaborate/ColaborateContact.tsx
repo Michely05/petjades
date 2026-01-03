@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Modal } from "../../components/Modal";
 import { useModal } from "../../hooks/useModal";
 import { isEmpty, isValidEmail, isMessageTooLong } from "../../utils/formValidators";
+import { API_URL } from "../../config/api";
 
 export const ColaborateContact = () => {
 
@@ -61,7 +62,7 @@ export const ColaborateContact = () => {
         if (!validateForm()) return;
     
         try {
-          await axios.post("https://localhost:7151/requests", {
+          await axios.post(`https://${API_URL}/requests`, {
             nom: form.nom,
             cognom: form.cognom,
             email: form.email,

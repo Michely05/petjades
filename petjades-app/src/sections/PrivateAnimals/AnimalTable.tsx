@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { Modal } from "../../components/Modal";
 import { useModal } from "../../hooks/useModal";
+import { API_URL } from "../../config/api";
 
 interface Animal {
   id: number;
@@ -24,7 +25,7 @@ export const AnimalTable = () => {
   const [animalToDelete, setAnimalToDelete] = useState<number | null>(null);
 
   useEffect(() => {
-    axios.get("https://localhost:7151/animals", {
+    axios.get(`https://${API_URL}/animals`, {
       headers: { Authorization: "Bearer " + token }
     })
     .then(res => setAnimals(res.data))
@@ -35,7 +36,7 @@ export const AnimalTable = () => {
     if (!animalToDelete) return;
 
     try {
-      await axios.delete(`https://localhost:7151/animals/${animalToDelete}`, {
+      await axios.delete(`https://${API_URL}/animals/${animalToDelete}`, {
         headers: { Authorization: "Bearer " + token }
       });
 

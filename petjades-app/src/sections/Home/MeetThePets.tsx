@@ -5,13 +5,14 @@ import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Animal } from "../../types/Animal";
+import { API_URL } from "../../config/api";
 
 export const MeetThePets = () => {
   const [animals, setAnimals] = useState<Animal[]>([]);
 
   useEffect(() => {
     axios
-      .get("https://localhost:7151/animals")
+      .get(`https://${API_URL}/animals`)
       .then((res) => {
         const lastFive = res.data
           .sort((a: Animal, b: Animal) => b.id - a.id)
@@ -50,7 +51,7 @@ export const MeetThePets = () => {
             <SwiperSlide key={animal.id}>
               <div className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
                 <img
-                  src={`https://localhost:7151${animal.imatgeUrl}`}
+                  src={`https://${API_URL}${animal.imatgeUrl}`}
                   alt={animal.nom}
                   className="w-full h-80 object-cover cursor-pointer"
                 />

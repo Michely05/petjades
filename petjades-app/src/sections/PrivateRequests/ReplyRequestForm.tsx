@@ -7,6 +7,7 @@ import { Modal } from "../../components/Modal";
 import { useModal } from "../../hooks/useModal";
 import { isEmpty, isValidEmail, isMessageTooLong } from "../../utils/formValidators";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../config/api";
 
 export const ReplyRequestForm = () => {
 
@@ -19,7 +20,7 @@ export const ReplyRequestForm = () => {
   const [reply, setReply] = useState("");
 
   useEffect(() => {
-    axios.get(`https://localhost:7151/requests/${id}`, {
+    axios.get(`https://${API_URL}/requests/${id}`, {
       headers: { Authorization: "Bearer " + token }
     })
     .then(res => {
@@ -50,7 +51,7 @@ export const ReplyRequestForm = () => {
 
     try {
       await axios.post(
-        `https://localhost:7151/requests/${id}/reply`,
+        `https://${API_URL}/requests/${id}/reply`,
         { resposta: reply },
         {
           headers: { Authorization: "Bearer " + token }

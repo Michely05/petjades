@@ -3,6 +3,7 @@ import { Filter } from "../../components/Filter";
 import { Animal } from "../../types/Animal";
 import axios from "axios";
 import { AnimalGrid } from "../../components/AnimalGrid";
+import { API_URL } from "../../config/api";
 
 export const AdoptDogs = () => {
 
@@ -18,7 +19,7 @@ export const AdoptDogs = () => {
 
     useEffect(() => {
         axios
-            .get("https://localhost:7151/animals")
+            .get(`https://${API_URL}/animals`)
             .then((res) => {
                 const filtered = res.data.filter((a: Animal) => a.especie?.toLowerCase() === "gos");
                 setAllDogs(filtered);
