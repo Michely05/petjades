@@ -1,5 +1,5 @@
 import { Footer } from "../components/Footer";
-import { NavBar } from "../components/navbar";
+import { NavBar } from "../components/Navbar";
 import { AdoptCats } from "../sections/Cats/AdoptCats";
 
 export const Cats = () => {
