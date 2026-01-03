@@ -1,0 +1,19 @@
+.fc .fc-button-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.fc .fc-button-primary:hover {
+  opacity: 0.9;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  opacity: 1;
+}
+
+/* avui */
+.fc .fc-day-today {
+  background-color: rgba(107, 148, 90, 0.1) !important;
+}

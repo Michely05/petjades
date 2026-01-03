@@ -1,22 +1,30 @@
+import "./Calendar.css"
 import FullCalendar from "@fullcalendar/react";
 import { EventInput, EventClickArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import caLocale from '@fullcalendar/core/locales/ca';
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Modal } from "../../components/Modal";
+import { ConfirmModal } from "../../components/ConfirmModal";
+import { useModal } from "../../hooks/useModal";
 import { AppointmentCreate } from "../../types/AppointmentCreate";
+import plusIcon from "../../assets/icons/plus-icon.png"
 
 export const Calendar = () => {
     const token = localStorage.getItem("token");
 
     const [events, setEvents] = useState<EventInput[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
+    const { openModal, modalProps } = useModal();
+    const [confirmOpen, setConfirmOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [animals, setAnimals] = useState<Array<{ id: number; nom: string }>>([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [appointmentToDelete, setAppointmentToDelete] = useState<number | null>(null);
 
     const [newAppointment, setNewAppointment] = useState<AppointmentCreate>({
         title: "",
@@ -37,8 +45,8 @@ export const Calendar = () => {
                     title: a.title ?? "Cita",
                     start: a.startDate,
                     end: a.endDate,
-                    // backgroundColor: getColorByStatus(a.status),
-                    // borderColor: getColorByStatus(a.status),
+                    backgroundColor: getColorByStatus(a.status), // Uncomment these
+                    borderColor: getColorByStatus(a.status),
                     extendedProps: {
                         personName: a.personName,
                         personEmail: a.personEmail,
@@ -100,7 +108,11 @@ export const Calendar = () => {
     const handleCreateAppointment = async () => {
         
         if (!newAppointment.title.trim()) {
-            alert("El títol és obligatori");
+            openModal({
+                title: "Error",
+                message: "Falta el títol de la cita.",
+                type: "error"
+            });
             return;
         }
 
@@ -110,7 +122,11 @@ export const Calendar = () => {
             const endDate = new Date(newAppointment.endDate);
 
             if (endDate <= startDate) {
-                alert("La data de fi ha de ser posterior a la d'inici");
+                openModal({
+                    title: "Error",
+                    message: "La data de fi ha de ser posterior a la d'inici.",
+                    type: "error"
+                });
                 setLoading(false);
                 return;
             }
@@ -136,7 +152,6 @@ export const Calendar = () => {
             resetForm();
             setModalOpen(false);
             await loadAppointments();
-            alert("Cita creada correctament!");
         } catch (err: any) {
             
             const errorMsg = err.response?.data?.title 
@@ -144,7 +159,11 @@ export const Calendar = () => {
                 || err.response?.data 
                 || err.message;
             
-            alert(`No s'ha pogut crear la cita: ${errorMsg}`);
+            openModal({
+                title: "Error",
+                message: `No s'ha pogut crear la cita: ${errorMsg}`,
+                type: "error"
+            });
         } finally {
             setLoading(false);
         }
@@ -155,7 +174,11 @@ export const Calendar = () => {
         if (!editingId) return;
 
         if (!newAppointment.title.trim()) {
-            alert("El títol és obligatori");
+            openModal({
+                title: "Error",
+                message: "Falta el títol de la cita.",
+                type: "error"
+            });
             return;
         }
 
@@ -165,7 +188,11 @@ export const Calendar = () => {
             const endDate = new Date(newAppointment.endDate);
 
             if (endDate <= startDate) {
-                alert("La data de fi ha de ser posterior a la d'inici");
+                openModal({
+                    title: "Error",
+                    message: "La data de fi ha de ser posterior a la d'inici.",
+                    type: "error"
+                });
                 setLoading(false);
                 return;
             }
@@ -191,16 +218,18 @@ export const Calendar = () => {
             resetForm();
             setModalOpen(false);
             await loadAppointments();
-            alert("Cita actualitzada correctament!");
+            // alert("Cita actualitzada correctament!");
         } catch (err: any) {
-            console.error("Error actualitzant cita:", err);
             
             const errorMsg = err.response?.data?.title 
                 || err.response?.data?.message 
                 || err.response?.data 
                 || err.message;
-            
-            alert(`No s'ha pogut actualitzar la cita: ${errorMsg}`);
+            openModal({
+                title: "Error",
+                message: `No s'ha pogut actualitzar la cita: ${errorMsg}`,
+                type: "error"
+            });
         } finally {
             setLoading(false);
         }
@@ -208,16 +237,18 @@ export const Calendar = () => {
 
     const handleDeleteAppointment = async (appointmentId: number, e: React.MouseEvent) => {
         e.stopPropagation();
-        
-        const confirmDelete = window.confirm("Estàs segur que vols eliminar aquesta cita?");
-        if (!confirmDelete) return;
+
+        setAppointmentToDelete(appointmentId);
+        setConfirmOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!appointmentToDelete) return;
 
         setLoading(true);
         try {
-            console.log("🗑️ Deleting appointment:", appointmentId);
-
             await axios.delete(
-                `https://localhost:7151/appointments/${appointmentId}`,
+                `https://localhost:7151/appointments/${appointmentToDelete}`,
                 { 
                     headers: { 
                         Authorization: "Bearer " + token
@@ -225,21 +256,24 @@ export const Calendar = () => {
                 }
             );
 
-            console.log("✅ Appointment deleted");
-
             await loadAppointments();
-            alert("Cita eliminada correctament!");
+            //alert("Cita eliminada correctament!");
         } catch (err: any) {
-            console.error("Error deleting appointment:", err);
             
             const errorMsg = err.response?.data?.title 
                 || err.response?.data?.message 
                 || err.response?.data 
                 || err.message;
-            
-            alert(`No s'ha pogut eliminar la cita: ${errorMsg}`);
+        
+            openModal({
+                title: "Error",
+                message: `No s'ha pogut eliminar la cita: ${errorMsg}`,
+                type: "error"
+            });
         } finally {
             setLoading(false);
+            setConfirmOpen(false);
+            setAppointmentToDelete(null);
         }
     };
 
@@ -254,7 +288,7 @@ export const Calendar = () => {
                 >
                     <svg 
                         xmlns="http://www.w3.org/2000/svg" 
-                        className="h-4 w-4" 
+                        className="h-4 w-4 cursor-pointer" 
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="#dc2626"
@@ -288,15 +322,37 @@ export const Calendar = () => {
     };
 
     return (
-        <div className="p-8 bg-white rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-4 text-[--primary-color]">
-                Calendari de cites
-            </h2>
+        <div>
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-3xl text-(--primary-color) font-bold">AGENDA</h1>
+
+                <button
+                    onClick={() => {
+                        const now = new Date();
+                        const endDate = new Date(now.getTime() + 30 * 60000);
+                        
+                        setNewAppointment({
+                            title: "",
+                            startDate: formatDateForInput(now),
+                            endDate: formatDateForInput(endDate),
+                            animalId: undefined
+                        });
+                        setIsEditing(false);
+                        setEditingId(null);
+                        setModalOpen(true);
+                    }}
+                    className="bg-[--primary-color] text-(--primary-color) rounded-full p-2 shadow-lg hover:opacity-90 z-10"
+                    title="Nova cita"
+                >
+                    <img src={plusIcon} alt="Nova cita" className="w-8 h-8 cursor-pointer"/>
+                </button>
+            </div>
 
             <div className="[&_.fc-daygrid-day]:cursor-pointer [&_.fc-timegrid-slot]:cursor-pointer [&_.fc-event]:cursor-pointer [&_.fc-event:hover]:opacity-80">
                 <FullCalendar
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                    initialView="timeGridWeek"
+                    initialView="dayGridMonth"
+                    locale={caLocale}
                     selectable={!modalOpen}
                     editable={false}
                     events={events}
@@ -405,19 +461,30 @@ export const Calendar = () => {
                     </div>
                 </div>
             </Modal>
+
+            <ConfirmModal
+                obert={confirmOpen}
+                titol="Eliminar cita"
+                missatge="Estàs segur que vols eliminar aquesta cita? Aquesta acció no es pot desfer."
+                onConfirm={confirmDelete}
+                onCancel={() => {
+                setConfirmOpen(false);
+                setAppointmentToDelete(null);
+                }}
+            />
         </div>
     );
 };
 
-// const getColorByStatus = (status: string) => {
-//     switch (status) {
-//         case "pending":
-//             return "#f59e0b";
-//         case "confirmed":
-//             return "#16a34a";
-//         case "cancelled":
-//             return "#dc2626";
-//         default:
-//             return "#6b7280";
-//     }
-// };
+const getColorByStatus = (status: string) => {
+    switch (status) {
+        case "pending":
+            return "#f59e0b"; // orange
+        case "confirmed":
+            return "#6b945a"; // your primary green color
+        case "cancelled":
+            return "#dc2626"; // red
+        default:
+            return "#6b7280"; // gray
+    }
+};
