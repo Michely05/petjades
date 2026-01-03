@@ -24,10 +24,7 @@ public class AppointmentService : IAppointmentService
             Title = a.Title,
             StartDate = a.StartDate,
             EndDate = a.EndDate,
-            Status = a.Status,
-            PersonName = a.PersonName,
-            PersonEmail = a.PersonEmail,
-            AnimalName = a.Animal?.Nom
+            AnimalName = a.Animal != null ? a.Animal.Nom : null
         }).ToList();
     }
 
@@ -41,12 +38,8 @@ public class AppointmentService : IAppointmentService
         var appointment = new Appointment
         {
             Title = dto.Title,
-            PersonName = dto.PersonName,
-            PersonEmail = dto.PersonEmail,
-            //Notes = dto.Notes,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
-            Status = "pending",
             AnimalId = dto.AnimalId
         };
 
@@ -60,8 +53,6 @@ public class AppointmentService : IAppointmentService
         if (appointment == null) return false;
 
         appointment.Title = dto.Title;
-        appointment.PersonName = dto.PersonName;
-        appointment.PersonEmail = dto.PersonEmail;
         appointment.StartDate = dto.StartDate;
         appointment.EndDate = dto.EndDate;
         appointment.AnimalId = dto.AnimalId;
@@ -76,7 +67,6 @@ public class AppointmentService : IAppointmentService
         var appointment = await _repo.GetByIdAsync(id);
         if (appointment == null) return false;
 
-        appointment.Status = status;
         await _repo.UpdateAsync(appointment);
 
         return true;

@@ -16,6 +16,7 @@ public class AppointmentRepository : IAppointmentRepository
     {
         return await _context.Appointments
             .Include(a => a.Animal)
+            .OrderBy(a => a.StartDate)
             .ToListAsync();
     }
 
