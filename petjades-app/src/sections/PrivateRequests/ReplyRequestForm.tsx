@@ -20,7 +20,7 @@ export const ReplyRequestForm = () => {
   const [reply, setReply] = useState("");
 
   useEffect(() => {
-    axios.get(`https://${API_URL}/requests/${id}`, {
+    axios.get(`${API_URL}/requests/${id}`, {
       headers: { Authorization: "Bearer " + token }
     })
     .then(res => {
@@ -51,7 +51,7 @@ export const ReplyRequestForm = () => {
 
     try {
       await axios.post(
-        `https://${API_URL}/requests/${id}/reply`,
+        `${API_URL}/requests/${id}/reply`,
         { resposta: reply },
         {
           headers: { Authorization: "Bearer " + token }

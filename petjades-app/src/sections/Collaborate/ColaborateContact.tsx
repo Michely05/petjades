@@ -62,7 +62,7 @@ export const ColaborateContact = () => {
         if (!validateForm()) return;
     
         try {
-          await axios.post(`https://${API_URL}/requests`, {
+          await axios.post(`${API_URL}/requests`, {
             nom: form.nom,
             cognom: form.cognom,
             email: form.email,

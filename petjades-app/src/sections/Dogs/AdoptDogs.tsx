@@ -19,7 +19,7 @@ export const AdoptDogs = () => {
 
     useEffect(() => {
         axios
-            .get(`https://${API_URL}/animals`)
+            .get(`${API_URL}/animals`)
             .then((res) => {
                 const filtered = res.data.filter((a: Animal) => a.especie?.toLowerCase() === "gos");
                 setAllDogs(filtered);

@@ -83,7 +83,7 @@ export const AddAnimalForm = () => {
         formData.append("image", image);
       }
 
-      await axios.post(`https://${API_URL}/animals`, formData, {
+      await axios.post(`${API_URL}/animals`, formData, {
         headers: { 
           Authorization: "Bearer " + token,
           "Content-Type": "multipart/form-data"

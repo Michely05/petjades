@@ -68,7 +68,7 @@ export const AnimalPresentation = () => {
     };
 
     useEffect(() => {
-        axios.get<Animal>(`https://${API_URL}/animals/${id}`)
+        axios.get<Animal>(`${API_URL}/animals/${id}`)
             .then(response => {
                 setAnimal(response.data);
             })
@@ -91,7 +91,7 @@ export const AnimalPresentation = () => {
         if (!validateForm()) return;
 
         try {
-            await axios.post(`https://${API_URL}/requests`, {
+            await axios.post(`${API_URL}/requests`, {
                 nom: form.nom,
                 cognom: form.cognom,
                 email: form.email,
@@ -144,7 +144,7 @@ export const AnimalPresentation = () => {
 
                     <div className="md:col-span-2 flex justify-center">
                         <img
-                            src={`https://${API_URL}${animal?.imatgeUrl}`}
+                            src={`${API_URL}${animal?.imatgeUrl}`}
                             alt={animal?.nom}
                             className="max-h-full max-w-full object-contain"
                         />
@@ -186,7 +186,7 @@ export const AnimalPresentation = () => {
                     {[1,2,3].map(i => (
                     <img
                     key={i}
-                    src={`https://${API_URL}${animal.imatgeUrl}`}
+                    src={`${API_URL}${animal.imatgeUrl}`}
                     alt={animal.nom}
                     className="w-full h-[480px] object-cover"
                     />
