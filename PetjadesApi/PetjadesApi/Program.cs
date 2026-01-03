@@ -47,8 +47,7 @@ builder.Services.AddCors(options =>
             "https://petjades.vercel.app"
         )
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowAnyMethod();
     });
 });
 
