@@ -7,7 +7,14 @@ import { Colaborate } from "./pages/Colaborate";
 import { Nosaltres } from "./pages/Nosaltres";
 import { PrivateAccess } from "./pages/PrivateAccess";
 import { PrivateAnimals } from "./pages/PrivateAnimals";
+import { PrivateRequests } from "./pages/PrivateRequests";
+import { PrivateAgenda } from "./pages/PrivateAgenda";
 import { ProtectedRoute } from "./router/ProtectedRoute";
+import { DashboardLayout } from "./components/DashboardLayout";
+import { AddAnimalForm } from "./sections/PrivateAnimals/AddAnimalForm";
+import { UpdateAnimalForm } from "./sections/PrivateAnimals/UpdateAnimalForm";
+import { AnimalDetail } from "./pages/AnimalDetail";
+import { ReplyRequestForm } from "./sections/PrivateRequests/ReplyRequestForm";
 
 function App() {
   return (
@@ -17,18 +24,29 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/adopta-gats" element={<Cats />} />
           <Route path="/adopta-gossos" element={<Dogs />} />
+          <Route path="/animal/:id" element={<AnimalDetail />} />
           <Route path="/collabora" element={<Colaborate />} />
           <Route path="/nosaltres" element={<Nosaltres />} />
           <Route path="/acces-privat" element={<PrivateAccess />} />
 
           <Route
-            path="/private-animals"
+            path="/dashboard"
             element={
               <ProtectedRoute>
-                <PrivateAnimals />
+                <DashboardLayout />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route path="private-animals" element={<PrivateAnimals />} />
+            <Route path="sollicituds" element={<PrivateRequests />} />
+            <Route path="agenda" element={<PrivateAgenda />} />
+            <Route path="new-animal" element={<AddAnimalForm />} />
+            <Route path="update-animal/:id" element={<UpdateAnimalForm />} />
+            <Route
+              path="private-requests/reply/:id"
+              element={<ReplyRequestForm />}
+            />
+          </Route>
         </Routes>
       </main>
     </div>

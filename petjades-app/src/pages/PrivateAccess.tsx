@@ -4,33 +4,50 @@ import { PawIcon } from '../components/PawIcon';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { Modal } from '../components/Modal';
+import { useModal } from '../hooks/useModal';
+import { isEmpty } from "../utils/formValidators";
 
 export const PrivateAccess = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { openModal, modalProps } = useModal();
 
     const navigate = useNavigate();
+
+    const validateLogin = () => {
+        if (isEmpty(email) || isEmpty(password)) {
+            openModal({
+            title: "Formulari incomplet",
+            message: "Manca el correu electrònic i/o la contrasenya.",
+            type: "error"
+            });
+            return false;
+        }
+
+        return true;
+    };
+
+    const { login } = useAuth();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!validateLogin()) return;
+        
         try {
-            const response = await axios.post(
-                "https://localhost:7151/identity/login",
-                {
-                    email,
-                    password
-                }
-            );
-            const token = response.data.accessToken;
-            localStorage.setItem("token", token);
-            console.log("Login correcto:", response.data);
-            alert("sesión iniciada!");
-            navigate("/private-animals");
-        } catch (error: any) {
-            console.error("Error al iniciar sesión:", error.response?.data ?? error);
-            alert("Credenciales incorrectas...");
+            const response = await axios.post("https://localhost:7151/identity/login", { email, password });
+            login(response.data.accessToken);
+            navigate("/dashboard/private-animals");
+
+        } catch {
+            openModal({
+                title: "Error d'autenticació",
+                message: "Credencials incorrectes. Torna-ho a intentar.",
+                type: "error"
+            });
         }
     };
 
@@ -84,6 +101,9 @@ export const PrivateAccess = () => {
                     </div>
                 </form>
             </div>
+
+            <Modal {...modalProps} />
+
         </div>
     );
 };

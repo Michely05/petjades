@@ -1,8 +1,12 @@
 import welcomeImage from "../../assets/img/landing-image-1.jpg"; 
 import { BaseButton } from "../../components/BaseButton";
+import { useNavigate } from "react-router-dom";
 import "animate.css";
 
 export const Welcome = () => {
+
+  const navigate = useNavigate();
+
   return (
     <section className="relative min-h-screen md:h-[90vh] overflow-hidden px-4 md:px-12 lg:px-24">
       {/* background image */}
@@ -30,8 +34,8 @@ export const Welcome = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <BaseButton variant="primary">BUSCAR GATS</BaseButton>
-            <BaseButton variant="primary">BUSCAR GOSSOS</BaseButton>
+            <BaseButton variant="primary" onClick={() => navigate("/adopta-gats")}>BUSCAR GATS</BaseButton>
+            <BaseButton variant="primary" onClick={() => navigate("/adopta-gossos")}>BUSCAR GOSSOS</BaseButton>
           </div>
         </div>
       </div>

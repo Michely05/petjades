@@ -2,14 +2,25 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css/pagination";
-import card1 from "../../assets/img/carousel1.jpg";
-import card2 from "../../assets/img/carousel2.jpg";
-import card3 from "../../assets/img/carousel3.jpg";
-import card4 from "../../assets/img/carousel4.jpg";
-import card5 from "../../assets/img/carousel5.jpg";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Animal } from "../../types/Animal";
 
 export const MeetThePets = () => {
-  const cards = [card1, card2, card3, card4, card5];
+  const [animals, setAnimals] = useState<Animal[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("https://localhost:7151/animals")
+      .then((res) => {
+        const lastFive = res.data
+          .sort((a: Animal, b: Animal) => b.id - a.id)
+          .slice(0, 5);
+
+        setAnimals(lastFive);
+      })
+      .catch((err) => console.error("Error carregant animals:", err));
+  }, []);
 
   return (
     <section className="py-16">
@@ -22,7 +33,6 @@ export const MeetThePets = () => {
           modules={[Pagination, Autoplay]}
           spaceBetween={30}
           slidesPerView={1}
-          loop={true}
           pagination={{
             clickable: true,
             el: ".custom-pagination",
@@ -34,16 +44,22 @@ export const MeetThePets = () => {
             1024: { slidesPerView: 3 },
             1280: { slidesPerView: 4 },
           }}
-          className="rounded-2xl"
+          className="2xl"
         >
-          {cards.map((card, index) => (
-            <SwiperSlide key={index}>
-              <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+          {animals.map((animal) => (
+            <SwiperSlide key={animal.id}>
+              <div className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
                 <img
-                  src={card}
-                  alt={`Animal ${index + 1}`}
+                  src={`https://localhost:7151${animal.imatgeUrl}`}
+                  alt={animal.nom}
                   className="w-full h-80 object-cover cursor-pointer"
                 />
+
+                <div className="p-4 text-center">
+                  <h3 className="font-semibold text-lg text-(--primary-color)">
+                    {animal.nom}
+                  </h3>
+                </div>
               </div>
             </SwiperSlide>
           ))}
