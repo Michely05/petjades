@@ -25,7 +25,7 @@ export const AnimalTable = () => {
   const [animalToDelete, setAnimalToDelete] = useState<number | null>(null);
 
   useEffect(() => {
-    axios.get(`https://${API_URL}/animals`, {
+    axios.get(`${API_URL}/animals`, {
       headers: { Authorization: "Bearer " + token }
     })
     .then(res => setAnimals(res.data))
@@ -36,7 +36,7 @@ export const AnimalTable = () => {
     if (!animalToDelete) return;
 
     try {
-      await axios.delete(`https://${API_URL}/animals/${animalToDelete}`, {
+      await axios.delete(`${API_URL}/animals/${animalToDelete}`, {
         headers: { Authorization: "Bearer " + token }
       });
 

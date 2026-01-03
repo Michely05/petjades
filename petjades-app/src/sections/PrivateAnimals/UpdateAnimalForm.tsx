@@ -28,7 +28,7 @@ export const UpdateAnimalForm = () => {
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get(`https://${API_URL}/animals/${id}`)
+    axios.get(`${API_URL}/animals/${id}`)
       .then(res => {
         const a = res.data;
 
@@ -42,7 +42,7 @@ export const UpdateAnimalForm = () => {
           descripcio: a.descripcio ?? ""
         });
 
-        setPreview(a.imatgeUrl ? `https://${API_URL}` + a.imatgeUrl : null);
+        setPreview(a.imatgeUrl ? `${API_URL}` + a.imatgeUrl : null);
       })
       .catch(() => {
         openModal({
@@ -71,7 +71,7 @@ export const UpdateAnimalForm = () => {
       formData.append("image", image); // Solo si el usuario la cambia
     }
 
-    await axios.put(`https://${API_URL}/animals/${id}`, formData, {
+    await axios.put(`${API_URL}/animals/${id}`, formData, {
       headers: {
         Authorization: "Bearer " + token,
         "Content-Type": "multipart/form-data"

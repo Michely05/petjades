@@ -13,7 +13,7 @@ export const RequestsTable = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`https://${API_URL}/requests`, {
+    axios.get(`${API_URL}/requests`, {
       headers: {
         Authorization: "Bearer " + token
       }

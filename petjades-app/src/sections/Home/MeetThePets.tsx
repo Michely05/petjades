@@ -12,7 +12,7 @@ export const MeetThePets = () => {
 
   useEffect(() => {
     axios
-      .get(`https://${API_URL}/animals`)
+      .get(`${API_URL}/animals`)
       .then((res) => {
         const lastFive = res.data
           .sort((a: Animal, b: Animal) => b.id - a.id)
@@ -51,7 +51,7 @@ export const MeetThePets = () => {
             <SwiperSlide key={animal.id}>
               <div className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
                 <img
-                  src={`https://${API_URL}${animal.imatgeUrl}`}
+                  src={`${API_URL}${animal.imatgeUrl}`}
                   alt={animal.nom}
                   className="w-full h-80 object-cover cursor-pointer"
                 />
