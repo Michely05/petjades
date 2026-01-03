@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { Modal } from '../components/Modal';
 import { useModal } from '../hooks/useModal';
 import { isEmpty } from "../utils/formValidators";
+import { API_URL } from '../config/api';
 
 export const PrivateAccess = () => {
 
@@ -38,7 +39,7 @@ export const PrivateAccess = () => {
         if (!validateLogin()) return;
         
         try {
-            const response = await axios.post("https://localhost:7151/identity/login", { email, password });
+            const response = await axios.post(`${API_URL}/identity/login`, { email, password });
             login(response.data.accessToken);
             navigate("/dashboard/private-animals");
 

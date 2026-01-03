@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Modal } from "../../components/Modal";
 import { useModal } from "../../hooks/useModal";
+import { API_URL } from "../../config/api";
 
 export const UpdateAnimalForm = () => {
 
@@ -27,7 +28,7 @@ export const UpdateAnimalForm = () => {
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get(`https://localhost:7151/animals/${id}`)
+    axios.get(`https://${API_URL}/animals/${id}`)
       .then(res => {
         const a = res.data;
 
@@ -41,7 +42,7 @@ export const UpdateAnimalForm = () => {
           descripcio: a.descripcio ?? ""
         });
 
-        setPreview(a.imatgeUrl ? "https://localhost:7151" + a.imatgeUrl : null);
+        setPreview(a.imatgeUrl ? `https://${API_URL}` + a.imatgeUrl : null);
       })
       .catch(() => {
         openModal({
@@ -70,7 +71,7 @@ export const UpdateAnimalForm = () => {
       formData.append("image", image); // Solo si el usuario la cambia
     }
 
-    await axios.put(`https://localhost:7151/animals/${id}`, formData, {
+    await axios.put(`https://${API_URL}/animals/${id}`, formData, {
       headers: {
         Authorization: "Bearer " + token,
         "Content-Type": "multipart/form-data"

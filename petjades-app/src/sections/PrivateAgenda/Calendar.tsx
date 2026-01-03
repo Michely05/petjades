@@ -12,6 +12,7 @@ import { ConfirmModal } from "../../components/ConfirmModal";
 import { useModal } from "../../hooks/useModal";
 import { AppointmentCreate } from "../../types/AppointmentCreate";
 import plusIcon from "../../assets/icons/plus-icon.png"
+import { API_URL } from "../../config/api";
 
 export const Calendar = () => {
     const token = localStorage.getItem("token");
@@ -35,7 +36,7 @@ export const Calendar = () => {
 
     const loadAppointments = async () => {
         try {
-            const res = await axios.get("https://localhost:7151/appointments", {
+            const res = await axios.get(`https://${API_URL}/appointments`, {
                 headers: { Authorization: "Bearer " + token }
             });
 
@@ -62,7 +63,7 @@ export const Calendar = () => {
 
     const loadAnimals = async () => {
         try {
-            const res = await axios.get("https://localhost:7151/animals", {
+            const res = await axios.get(`https://${API_URL}/animals`, {
                 headers: { Authorization: "Bearer " + token }
             });
             setAnimals(res.data);
@@ -139,7 +140,7 @@ export const Calendar = () => {
             };
 
             const response = await axios.post(
-                "https://localhost:7151/appointments",
+                `https://${API_URL}/appointments`,
                 payload,
                 { 
                     headers: { 
@@ -205,7 +206,7 @@ export const Calendar = () => {
             };
 
             await axios.put(
-                `https://localhost:7151/appointments/${editingId}`,
+                `https://${API_URL}/appointments/${editingId}`,
                 payload,
                 { 
                     headers: { 
@@ -248,7 +249,7 @@ export const Calendar = () => {
         setLoading(true);
         try {
             await axios.delete(
-                `https://localhost:7151/appointments/${appointmentToDelete}`,
+                `https://${API_URL}/appointments/${appointmentToDelete}`,
                 { 
                     headers: { 
                         Authorization: "Bearer " + token

@@ -6,6 +6,7 @@ import { inputStyle } from "../../components/InputStyle";
 import { Modal } from "../../components/Modal";
 import { useModal } from "../../hooks/useModal";
 import { isEmpty, isValidEmail, isMessageTooLong } from "../../utils/formValidators";
+import { API_URL } from "../../config/api";
 
 export const AddAnimalForm = () => {
     const initialForm = {
@@ -82,7 +83,7 @@ export const AddAnimalForm = () => {
         formData.append("image", image);
       }
 
-      await axios.post("https://localhost:7151/animals", formData, {
+      await axios.post(`https://${API_URL}/animals`, formData, {
         headers: { 
           Authorization: "Bearer " + token,
           "Content-Type": "multipart/form-data"

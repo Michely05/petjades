@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Animal } from "../types/Animal";
+import { API_URL } from "../config/api";
 
 interface AnimalGridProps {
     animals: Animal[];
@@ -18,7 +19,7 @@ export const AnimalGrid = ({ animals }: AnimalGridProps) => {
                     className="relative overflow-hidden shadow-md bg-white cursor-pointer hover:scale-[1.05] transition"
                 >
                     <img
-                        src={`https://localhost:7151${animal.imatgeUrl}`}
+                        src={`https://${API_URL}${animal.imatgeUrl}`}
                         alt={animal.nom}
                         className="w-full h-70 object-cover"
                     />

@@ -4,6 +4,7 @@ import { Request } from "../../types/Request";
 import { Modal } from "../../components/Modal";
 import { useModal } from "../../hooks/useModal";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config/api";
 
 export const RequestsTable = () => {
   const [requests, setRequests] = useState<Request[]>([]);
@@ -12,7 +13,7 @@ export const RequestsTable = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("https://localhost:7151/requests", {
+    axios.get(`https://${API_URL}/requests`, {
       headers: {
         Authorization: "Bearer " + token
       }

@@ -3,6 +3,7 @@ import { Filter } from "../../components/Filter";
 import { Animal } from "../../types/Animal";
 import axios from "axios";
 import { AnimalGrid } from "../../components/AnimalGrid";
+import { API_URL } from "../../config/api";
 
 export const AdoptCats = () => {
     const [allCats, setAllCats] = useState<Animal[]>([]);
@@ -17,7 +18,7 @@ export const AdoptCats = () => {
 
     useEffect(() => {
     axios
-      .get("https://localhost:7151/animals")
+      .get(`https://${API_URL}/animals`)
       .then((res) => {
         const filtered = res.data.filter((a: Animal) => a.especie === "gat");
         setAllCats(filtered);
