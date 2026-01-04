@@ -1,17 +1,31 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using PetjadesApi;
 using PetjadesApi.Repositories;
 using PetjadesApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-if (string.IsNullOrEmpty(connectionString))
+if (string.IsNullOrEmpty(databaseUrl))
 {
     throw new Exception("DATABASE_URL is not set");
 }
+
+var uri = new Uri(databaseUrl);
+var userInfo = uri.UserInfo.Split(':');
+
+var connectionString = new NpgsqlConnectionStringBuilder
+{
+    Host = uri.Host,
+    Port = uri.Port,
+    Username = userInfo[0],
+    Password = userInfo[1],
+    Database = uri.AbsolutePath.TrimStart('/'),
+    SslMode = SslMode.Require
+}.ToString();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -47,7 +61,8 @@ builder.Services.AddCors(options =>
                 "https://petjades.vercel.app"
             )
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -56,9 +71,11 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
-
 app.UseCors("AllowFrontend");
+
+app.UseStaticFiles();
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
