@@ -7,31 +7,30 @@ using PetjadesApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+var rawUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-if (string.IsNullOrEmpty(databaseUrl))
-{
+if (string.IsNullOrEmpty(rawUrl))
     throw new Exception("DATABASE_URL is not set");
-}
 
-var uri = new Uri(databaseUrl);
+var uri = new Uri(rawUrl);
+
 var userInfo = uri.UserInfo.Split(':');
+var username = userInfo[0];
+var password = userInfo[1];
 
-var connectionString = new NpgsqlConnectionStringBuilder
-{
-    Host = uri.Host,
-    Port = uri.Port,
-    Username = userInfo[0],
-    Password = userInfo[1],
-    Database = uri.AbsolutePath.TrimStart('/'),
-    SslMode = SslMode.Require
-}.ToString();
+var npgsqlConnectionString =
+    $"Host={uri.Host};" +
+    $"Port={uri.Port};" +
+    $"Database={uri.AbsolutePath.TrimStart('/')};" +
+    $"Username={username};" +
+    $"Password={password};" +
+    $"SSL Mode=Require;Trust Server Certificate=true";
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(npgsqlConnectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -63,8 +62,7 @@ builder.Services.AddCors(options =>
                 "https://petjades.vercel.app"
             )
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowAnyMethod();
     });
 });
 
