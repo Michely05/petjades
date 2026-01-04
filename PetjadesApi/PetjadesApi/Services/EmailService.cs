@@ -17,10 +17,14 @@ public class EmailService : IEmailService
     }
     public async Task SendAsync(string to, string subject, string body)
     {
+        var from = _config["Email:From"];
+
+        if (string.IsNullOrWhiteSpace(from))
+            throw new InvalidOperationException("Email:From is not configured");
 
         var message = new MailMessage
         {
-            From = new MailAddress(_config["Email:From"]),
+            From = new MailAddress(from),
             Subject = subject,
             Body = body,
             IsBodyHtml = true
@@ -30,7 +34,7 @@ public class EmailService : IEmailService
 
         using var smtp = new SmtpClient(
             _config["Email:Smtp"],
-            int.Parse(_config["Email:Port"])
+            int.Parse(_config["Email:Port"]!)
         )
         {
             Credentials = new NetworkCredential(
@@ -41,7 +45,6 @@ public class EmailService : IEmailService
         };
 
         await smtp.SendMailAsync(message);
-
     }
 
 }
