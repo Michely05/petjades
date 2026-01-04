@@ -8,12 +8,13 @@ public class ApplicationDbContextFactory
 {
     public ApplicationDbContext CreateDbContext(string[] args)
     {
-        var connectionString =
-            Environment.GetEnvironmentVariable("DATABASE_URL")
-            ?? "Host=localhost;Port=5432;Database=PetjadesApi;Username=postgres;Password=postgres";
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-        var optionsBuilder =
-            new DbContextOptionsBuilder<ApplicationDbContext>();
+        var connectionString =
+            Environment.GetEnvironmentVariable("DATABASE_URL");
+
+        if (string.IsNullOrEmpty(connectionString))
+            throw new Exception("DATABASE_URL is not set");
 
         optionsBuilder.UseNpgsql(connectionString);
 
