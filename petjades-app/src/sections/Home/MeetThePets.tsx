@@ -51,7 +51,7 @@ export const MeetThePets = () => {
             <SwiperSlide key={animal.id}>
               <div className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
                 <img
-                  src={`${API_URL}${animal.imatgeUrl}`}
+                  src={`${animal.imatgeUrl}`}
                   alt={animal.nom}
                   className="w-full h-80 object-cover cursor-pointer"
                 />
