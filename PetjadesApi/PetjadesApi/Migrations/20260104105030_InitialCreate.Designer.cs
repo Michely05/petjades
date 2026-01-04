@@ -12,7 +12,7 @@ using PetjadesApi;
 namespace PetjadesApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260104102431_InitialCreate")]
+    [Migration("20260104105030_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
