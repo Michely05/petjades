@@ -45,18 +45,27 @@ public class RequestService : IRequestService
         if (request == null) return false;
 
         request.Resposta = resposta;
-        request.RespostaEnviada = true;
+
+        try
+        {
+            await _email.SendAsync(
+                request.Email,
+                "Resposta a la teva sol·licitud",
+                BuildEmailBody(request, resposta)
+            );
+
+            request.RespostaEnviada = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("EMAIL ERROR: " + ex.Message);
+            request.RespostaEnviada = false;
+        }
 
         await _repo.UpdateAsync(request);
-
-        await _email.SendAsync(
-            request.Email,
-            "Resposta a la teva sol·licitud",
-            BuildEmailBody(request, resposta)
-        );
-
         return true;
     }
+
 
     private string BuildEmailBody(Request request, string resposta)
     {

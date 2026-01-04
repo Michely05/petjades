@@ -1,50 +1,44 @@
-﻿using PetjadesApi.Dtos;
-using PetjadesApi.Models;
-using PetjadesApi.Repositories;
-using System.Net;
-using System.Net.Mail;
-using System.Security.Cryptography.Xml;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace PetjadesApi.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly IConfiguration _config;
+    private readonly HttpClient _http;
 
     public EmailService(IConfiguration config)
     {
-        _config = config;
+        var apiKey = config["RESEND_API_KEY"];
+
+        if (string.IsNullOrWhiteSpace(apiKey))
+            throw new InvalidOperationException("RESEND_API_KEY is not configured");
+
+        _http = new HttpClient
+        {
+            BaseAddress = new Uri("https://api.resend.com/")
+        };
+
+        _http.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", apiKey);
     }
+
     public async Task SendAsync(string to, string subject, string body)
     {
-        var from = _config["Email:From"];
-
-        if (string.IsNullOrWhiteSpace(from))
-            throw new InvalidOperationException("Email:From is not configured");
-
-        var message = new MailMessage
+        var payload = new
         {
-            From = new MailAddress(from),
-            Subject = subject,
-            Body = body,
-            IsBodyHtml = true
+            from = "Petjades <onboarding@resend.dev>",
+            to = new[] { to },
+            subject = subject,
+            html = body
         };
 
-        message.To.Add(to);
+        var response = await _http.PostAsJsonAsync("emails", payload);
 
-        using var smtp = new SmtpClient(
-            _config["Email:Smtp"],
-            int.Parse(_config["Email:Port"]!)
-        )
+        if (!response.IsSuccessStatusCode)
         {
-            Credentials = new NetworkCredential(
-                _config["Email:User"],
-                _config["Email:Password"]
-            ),
-            EnableSsl = true
-        };
-
-        await smtp.SendMailAsync(message);
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Resend error: {error}");
+        }
     }
-
 }
