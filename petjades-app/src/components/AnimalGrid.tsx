@@ -19,7 +19,7 @@ export const AnimalGrid = ({ animals }: AnimalGridProps) => {
                     className="relative overflow-hidden shadow-md bg-white cursor-pointer hover:scale-[1.05] transition"
                 >
                     <img
-                        src={`${API_URL}${animal.imatgeUrl}`}
+                        src={`${animal.imatgeUrl}`}
                         alt={animal.nom}
                         className="w-full h-70 object-cover"
                     />

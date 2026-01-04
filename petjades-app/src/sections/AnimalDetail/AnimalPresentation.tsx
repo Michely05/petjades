@@ -144,7 +144,7 @@ export const AnimalPresentation = () => {
 
                     <div className="md:col-span-2 flex justify-center">
                         <img
-                            src={`${API_URL}${animal?.imatgeUrl}`}
+                            src={`${animal?.imatgeUrl}`}
                             alt={animal?.nom}
                             className="max-h-full max-w-full object-contain"
                         />
@@ -186,7 +186,7 @@ export const AnimalPresentation = () => {
                     {[1,2,3].map(i => (
                     <img
                     key={i}
-                    src={`${API_URL}${animal.imatgeUrl}`}
+                    src={`${animal.imatgeUrl}`}
                     alt={animal.nom}
                     className="w-full h-[480px] object-cover"
                     />
