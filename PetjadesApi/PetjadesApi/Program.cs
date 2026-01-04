@@ -41,12 +41,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(
-            "http://localhost:5173",
-            "https://petjades.vercel.app"
-        )
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "https://petjades.vercel.app"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -59,13 +60,10 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 
-app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
 
 app.Run();
