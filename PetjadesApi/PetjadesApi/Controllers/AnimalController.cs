@@ -9,17 +9,19 @@ namespace PetjadesApi.Controllers;
 [Route("[controller]")]
 public class AnimalsController : ControllerBase
 {
-    private readonly IAnimalService _AnimalService;
+    private readonly IAnimalService _animalService;
+    private readonly CloudinaryService _cloudinaryService;
 
-    public AnimalsController(IAnimalService service)
+    public AnimalsController(IAnimalService animalService, CloudinaryService cloudinaryService)
     {
-        _AnimalService = service;
+        _animalService = animalService;
+        _cloudinaryService = cloudinaryService;
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var animal = await _AnimalService.GetByIdAsync(id);
+        var animal = await _animalService.GetByIdAsync(id);
 
         if (animal == null)
             return NotFound("Animal no trobat");
@@ -30,7 +32,7 @@ public class AnimalsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var animals = await _AnimalService.GetAllAsync();
+        var animals = await _animalService.GetAllAsync();
         return Ok(animals);
     }
 
@@ -50,20 +52,11 @@ public class AnimalsController : ControllerBase
 
         if (dto.Image != null)
         {
-            var folder = Path.Combine("wwwroot", "images", "animals");
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
-            var filePath = Path.Combine(folder, fileName);
-
-            using var stream = new FileStream(filePath, FileMode.Create);
-            await dto.Image.CopyToAsync(stream);
-
-            animal.ImatgeUrl = $"/images/animals/{fileName}";
+            var imageUrl = await _cloudinaryService.UploadImageAsync(dto.Image);
+            animal.ImatgeUrl = imageUrl;
         }
 
-        var created = await _AnimalService.CreateAsync(animal);
+        var created = await _animalService.CreateAsync(animal);
         return Created($"/animals/{created.Id}", created);
     }
 
@@ -73,12 +66,11 @@ public class AnimalsController : ControllerBase
         int id,
         [FromForm] AnimalUpdateDto dto)
     {
-        var existing = await _AnimalService.GetByIdAsync(id);
+        var existing = await _animalService.GetByIdAsync(id);
 
         if (existing == null)
             return NotFound("Animal no trobat");
 
-        // Actualizar campos
         existing.Nom = dto.Nom;
         existing.Especie = dto.Especie;
         existing.Genere = dto.Genere;
@@ -87,30 +79,21 @@ public class AnimalsController : ControllerBase
         existing.Estat = dto.Estat;
         existing.Descripcio = dto.Descripcio;
 
-        // Si envían imagen nueva → sustituir
+        // imatge nova > sustituir anterior
         if (dto.Image != null)
         {
-            var folder = Path.Combine("wwwroot", "images", "animals");
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
-            var fileName = Guid.NewGuid() + Path.GetExtension(dto.Image.FileName);
-            var filePath = Path.Combine(folder, fileName);
-
-            using var stream = new FileStream(filePath, FileMode.Create);
-            await dto.Image.CopyToAsync(stream);
-
-            existing.ImatgeUrl = $"/images/animals/{fileName}";
+            var imageUrl = await _cloudinaryService.UploadImageAsync(dto.Image);
+            existing.ImatgeUrl = imageUrl;
         }
 
-        var updated = await _AnimalService.UpdateAnimal(existing);
+        var updated = await _animalService.UpdateAnimal(existing);
         return Ok(updated);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await _AnimalService.DeleteAsync(id);
+        var deleted = await _animalService.DeleteAsync(id);
 
         if (!deleted)
             return NotFound("Animal no trobat");
