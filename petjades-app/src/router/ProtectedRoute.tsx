@@ -7,5 +7,5 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 
     console.log("Auth state:", isAuthenticated);
 
-    return isAuthenticated ? children : <Navigate to="/acces-privat" />;
+    return isAuthenticated ? children : <Navigate to="/" />;
 };
