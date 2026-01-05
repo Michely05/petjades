@@ -178,21 +178,6 @@ export const AnimalPresentation = () => {
                     </div>
                 </div>
             </section>
-            <section className="px-4 sm:px-8 md:px-16 lg:px-75 pb-14">
-                <h2 className="font-title font-bold flex items-center gap-3 text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] mb-8 text-(--primary-color) text-center">
-                    AQUÍ TENS MÉS FOTOS MEVES
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {[1,2,3].map(i => (
-                    <img
-                    key={i}
-                    src={`${animal.imatgeUrl}`}
-                    alt={animal.nom}
-                    className="w-full h-[480px] object-cover"
-                    />
-                ))}
-                </div>
-            </section>
 
             <section className="px-4 sm:px-8 md:px-16 lg:px-75 pb-14">
                 <h2 className="font-title font-bold flex items-center gap-3 text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] mb-8 text-(--primary-color) text-center">
